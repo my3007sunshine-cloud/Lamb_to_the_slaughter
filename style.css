@@ -1,0 +1,15 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  /* Centra o canvas na página */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0; /* Cor de fundo da página fora do canvas */
+}
+
+canvas {
+  display: block;
+  border: 1px solid black; /* Para ver os limites do seu jogo */
+}
