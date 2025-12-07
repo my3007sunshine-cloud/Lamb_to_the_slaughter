@@ -1,15 +1,13 @@
 html, body {
   margin: 0;
   padding: 0;
-  /* Centra o canvas na página */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f0f0f0; /* Cor de fundo da página fora do canvas */
+  overflow: hidden; /* Evita barras de rolagem */
+  background-color: #f0f0f0;
+  width: 100%;
+  height: 100%;
 }
 
 canvas {
+  /* Remove a borda para uma experiência de tela cheia mais limpa */
   display: block;
-  border: 1px solid black; /* Para ver os limites do seu jogo */
 }
