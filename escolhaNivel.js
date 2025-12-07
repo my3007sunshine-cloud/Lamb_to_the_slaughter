@@ -1,5 +1,3 @@
-// escolhaNivel.js
-
 function drawNiveis() {
     fill(0);
     textAlign(CENTER, CENTER);

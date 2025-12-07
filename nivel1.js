@@ -1,6 +1,5 @@
-// nivel1.js
-
 let minigameSuccess = false;
+let drinksFeitos = 0; //
 
 function drawNivel1() {
     // 1. INTRODUÇÃO (Vídeo)
@@ -22,12 +21,9 @@ function drawNivel1() {
     // 2. JOGO
     if (nivel1Phase === 1) {
         // Desenha o minigame
-        drawNivelPlaceholder(1);
-
-        fill(0);
-        textSize(24);
-        text("MINIGAME ATIVO", width/2, height/2 - 50);
-        text("Clique para testar vitória/derrota", width/2, height/2 + 50);
+        drawNivelPlaceholder(1, backgroundMiniGame1);
+        drawObjectiveBox("MAKE DRINK", drinksFeitos, 1);
+        drawIngredientsList(["Whiskey", "Soda", "Ice"]);
     }
 
     // 3. CONCLUSÃO (Vídeo Sucesso)

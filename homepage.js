@@ -1,5 +1,3 @@
-// homepage.js
-
 function drawMenu() {
     fill(0);
     textAlign(CENTER, CENTER);

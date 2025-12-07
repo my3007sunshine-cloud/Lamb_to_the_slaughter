@@ -1,5 +1,3 @@
-// sketch.js
-
 // Estados do Jogo
 let gameState = 0;      // 0: Menu | 1: Seleção de Níveis | 2: Nível 1 | 3: Nível 2
 let nivel1Phase = 0;    // 0: Intro | 1: Jogo | 2: Conclusão | 3: Falha
@@ -22,18 +20,30 @@ let isVideoPlaying = false;
 // Layout
 const AF_CENTRO = 140;
 const SLIDER_LENGTH = 100;
-let BTN_VOLTAR = { x: 80, y: 50, w: 100, h: 40 };
+let BTN_VOLTAR;
 
 // Variáveis Nível 1
 let circleX, circleY;
+
+// Assets do Minigame Nível 1
+let backgroundMiniGame1;
+let imgWhiskey, imgSoda, imgIceBag, imgIceCube;
 
 function setup() {
   // CRUCIAL: Cria o canvas do tamanho exato da janela
   createCanvas(windowWidth, windowHeight);
 
+  BTN_VOLTAR = { x: width - 80, y: 50, w: 100, h: 40 };
   textureBackground = loadImage('imagens/textura-de-papel-branco2.png');
   inverseTexture = loadImage('textura-de-papel-branco-inverso.png');
   minhaFonte = loadFont('font/Pinkend.ttf');
+
+  //nivel1
+  backgroundMiniGame1= loadImage('imagens/minijogo.png');
+  imgWhiskey = loadImage('imagens/whiskey.png');
+  imgSoda = loadImage('imagens/soda.png');
+  imgIceBag = loadImage('imagens/sacoGelo.png');
+  imgIceCube = loadImage('imagens/gelo.png');
 
   rectMode(CENTER);
   imageMode(CORNER);
@@ -65,7 +75,7 @@ function draw() {
     case 1:
       drawNiveis();
       break;
-    case 2:
+    case 2: //nivel1
       drawNivel1();
       drawBtnVoltar();
       break;
@@ -165,15 +175,18 @@ function handleVideoSkip() {
   }
 }
 
-function drawNivelPlaceholder(nivelNum) {
-  fill(255, 255, 255, 200);
-  noStroke();
-  rect(width / 2, height / 2, width - 100, height - 100);
+function drawNivelPlaceholder(nivelNum, imagemDeFundo) {
 
-  fill(0);
-  textSize(32);
+  image(imagemDeFundo, 0, 0, width, height);
+
+
+  // --- TEXTO ---
+  fill(0); // Cor do texto (Preto)
+  noStroke();
   textAlign(CENTER, CENTER);
-  text(`Nível ${nivelNum}`, width / 2, height / 2 - 20);
-  textSize(20);
-  text("Em construção...", width / 2, height / 2 + 20);
+
+  // Dica: Se a imagem for escura, mude o fill para 255 (branco)
+  textSize(32);
+  text(`level ${nivelNum}`, width / 2, height / 10);
+
 }
