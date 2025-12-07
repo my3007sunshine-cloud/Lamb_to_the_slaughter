@@ -1,15 +1,127 @@
-function drawRetryScreen() {
+function drawRetryScreen(message) {
     background(0);
-    fill(255, 0, 0);
-    textSize(50);
-    textAlign(CENTER);
-    text("FALHOU", width/2, height/2 - 50);
+
+    push();
+    imageMode(CORNER);
+
+    if (inverseTexture) {
+        image(inverseTexture, 0, 0, width, height);
+    } else {
+        fill(50);
+        rectMode(CORNER);
+        rect(0, 0, width, height);
+    }
+    pop();
+
+    const scaleFactor = 2;
 
     fill(255);
-    rect(width/2, height/2 + 100, 200, 50);
+    textSize(18 * scaleFactor);
+    textAlign(CENTER, CENTER);
+    text(message, width / 2, height / 2 - (100 * scaleFactor));
+
+    fill(255, 0, 0);
+    textSize(50 * scaleFactor);
+    text("OOPS................", width / 2, height / 2 - (50 * scaleFactor));
+    text("TRY AGAIN", width / 2, height / 2);
+
+    const xButton = width / 2;
+    const yButton = height / 2 + (100 * scaleFactor);
+    const wButton = 150;
+    const hButton = 50;
+
+    rectMode(CENTER);
+
     fill(0);
+    rect(xButton, yButton, wButton, hButton);
+
+    fill(255);
     textSize(30);
-    text("TENTAR DE NOVO", width/2, height/2 + 100);
+
+    push();
+    translate(xButton - 50, yButton);
+    noStroke();
+    triangle(-10, -10, -10, 10, 5, 0);
+    pop();
+
+    textAlign(LEFT, CENTER);
+    text("RETRY", xButton - 20, yButton);
+}
+
+// addicionalScreen.js (CORRIGIDO - Seta Melhorada)
+
+function drawNextLevel() {
+    push();
+    textAlign(CENTER, CENTER);
+    fill(255, 0, 0);
+    textSize(80);
+    text("NIVEL SEGUINTE", width / 2, height / 2 - 80);
+    pop();
+
+    rectMode(CENTER);
+    const btnX = width / 2;
+    const btnY = height / 2 + 50;
+    const btnW = 200;
+    const btnH = 60;
+
+    fill(0);
+    noStroke();
+    rect(btnX, btnY, btnW, btnH);
+
+    fill(200);
+    push();
+    translate(btnX, btnY);
+    triangle(-10, -10, -10, 10, 10, 0);
+    pop();
+
+    const iconY = height - 60;
+    const homeX = 80;
+    const retryX = 160;
+
+    push();
+    stroke(0);
+    strokeWeight(3);
+    strokeCap(ROUND);
+    strokeJoin(ROUND);
+
+    // Casa
+    noFill();
+    beginShape();
+    vertex(homeX, iconY - 12);
+    vertex(homeX + 12, iconY - 2);
+    vertex(homeX - 12, iconY - 2);
+    endShape(CLOSE);
+
+    rectMode(CORNER);
+    rect(homeX - 10, iconY - 2, 20, 16);
+    rect(homeX - 3, iconY + 6, 6, 8);
+
+    // Seta (Replay)
+    noFill();
+    stroke(0);
+    strokeWeight(3);
+
+    const radius = 12;
+    const centerY = iconY + 5;
+    const startAngle = PI / 4;
+    const endAngle = TWO_PI - PI / 8;
+
+    arc(retryX, centerY, radius * 2, radius * 2, startAngle, endAngle);
+
+    push();
+    const arrowTipX = retryX + cos(startAngle) * radius;
+    const arrowTipY = centerY + sin(startAngle) * radius;
+
+    translate(arrowTipX, arrowTipY);
+    rotate(startAngle + PI / 2 + 0.35); // Ângulo ajustado
+
+    noStroke();
+    fill(0);
+    // Triângulo movido ligeiramente para a esquerda (x: -2)
+    triangle(0, 0, -7, -5, -7, 5);
+    pop();
+
+    pop();
 }
 
 function drawObjectiveBox(tarefaTexto, progressoAtual, totalNecessario) {

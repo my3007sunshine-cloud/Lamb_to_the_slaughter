@@ -1,6 +1,6 @@
 // Estados do Jogo
 let gameState = 0;      // 0: Menu | 1: Seleção de Níveis | 2: Nível 1 | 3: Nível 2
-let nivel1Phase = 0;    // 0: Intro | 1: Jogo | 2: Conclusão | 3: Falha
+let nivel1Phase = 0;    // 0: Intro | 1: Jogo | 2: Conclusão | 3: Falha | 4: Próximo Nível
 
 // Assets
 let minhaFonte;
@@ -27,15 +27,14 @@ let circleX, circleY;
 
 // Assets do Minigame Nível 1
 let backgroundMiniGame1;
-let imgWhiskey, imgSoda, imgIceBag, imgIceCube;
+let imgWhiskey, imgSoda, imgIceBag, imgIceCube, imgcopo;
 
 function setup() {
-  // CRUCIAL: Cria o canvas do tamanho exato da janela
   createCanvas(windowWidth, windowHeight);
 
   BTN_VOLTAR = { x: width - 80, y: 50, w: 100, h: 40 };
   textureBackground = loadImage('imagens/textura-de-papel-branco2.png');
-  inverseTexture = loadImage('textura-de-papel-branco-inverso.png');
+  inverseTexture = loadImage('imagens/textura-de-papel-branco inverso.png');
   minhaFonte = loadFont('font/Pinkend.ttf');
 
   //nivel1
@@ -44,6 +43,7 @@ function setup() {
   imgSoda = loadImage('imagens/soda.png');
   imgIceBag = loadImage('imagens/sacoGelo.png');
   imgIceCube = loadImage('imagens/gelo.png');
+  imgcopo = loadImage('imagens/copo2.png');
 
   rectMode(CENTER);
   imageMode(CORNER);
@@ -56,12 +56,11 @@ function setup() {
 function draw() {
   background(255);
 
-  // Desenha o fundo esticado para cobrir toda a janela
   if (textureBackground) {
     image(textureBackground, 0, 0, width, height);
   }
 
-  // Prioridade para o Vídeo (desenha por cima de tudo)
+  // Prioridade para o Vídeo
   if (isVideoPlaying) {
     drawLevelVideo();
     return;
@@ -81,7 +80,7 @@ function draw() {
       break;
     default:
       if (gameState >= 3) {
-        drawNivelPlaceholder(gameState);
+        drawNivelPlaceholder(gameState, textureBackground);
         drawBtnVoltar();
       }
       break;
@@ -124,10 +123,8 @@ function mouseReleased() {
   isDraggingVolume = false;
 }
 
-// Redimensiona o canvas se o usuário mudar o tamanho da janela
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  // Se houver vídeo, ajusta o tamanho dele também
   if (nivelVideo) {
     nivelVideo.size(width, height);
   }
@@ -170,23 +167,21 @@ function handleVideoSkip() {
     if (nivel1Phase === 0) {
       forceSkipVideo(() => { nivel1Phase = 1; }); // Pula Intro -> Jogo
     } else if (nivel1Phase === 2) {
-      forceSkipVideo(() => { gameState = 3; });   // Pula Conclusão -> Nível 2
+      // Pula Conclusão -> Tela de Próximo Nível (Phase 4)
+      forceSkipVideo(() => {
+        gameState = 2; // Garante que ficamos no gameState 2
+        nivel1Phase = 4;
+      });
     }
   }
 }
 
 function drawNivelPlaceholder(nivelNum, imagemDeFundo) {
+  if (imagemDeFundo) image(imagemDeFundo, 0, 0, width, height);
 
-  image(imagemDeFundo, 0, 0, width, height);
-
-
-  // --- TEXTO ---
-  fill(0); // Cor do texto (Preto)
+  fill(0);
   noStroke();
   textAlign(CENTER, CENTER);
-
-  // Dica: Se a imagem for escura, mude o fill para 255 (branco)
   textSize(32);
   text(`level ${nivelNum}`, width / 2, height / 10);
-
 }
