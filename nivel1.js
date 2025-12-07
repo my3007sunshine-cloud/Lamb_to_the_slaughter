@@ -22,8 +22,8 @@ function drawNivel1() {
     if (nivel1Phase === 1) {
         // Desenha o minigame
         drawNivelPlaceholder(1, backgroundMiniGame1);
-        drawObjectiveBox("MAKE DRINK", drinksFeitos, 1);
-        drawIngredientsList(["Whiskey", "Soda", "Ice"]);
+        let fimDaCaixa1 = drawObjectiveBox("MAKE DRINK", drinksFeitos, 1);
+        drawIngredientsList(["Whiskey", "Soda", "Ice"],fimDaCaixa1);
     }
 
     // 3. CONCLUSÃO (Vídeo Sucesso)

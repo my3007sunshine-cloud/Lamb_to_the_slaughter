@@ -15,38 +15,6 @@ function drawRetryScreen() {
 function drawObjectiveBox(tarefaTexto, progressoAtual, totalNecessario) {
     push();
 
-    // Configurações de layout (pode ajustar aqui para mudar em TODOS os níveis de uma vez)
-    let w = 250;
-    let h = 120;
-    let x = w/2 +20;
-    let y = h/2 +20;
-
-    fill(255); stroke(0); strokeWeight(3);
-    rect(x, y, w, h);
-    line(x-w/2, y-30, x + w/2, y-30);
-
-    // Título Fixo
-    fill(0); noStroke(); textAlign(CENTER, CENTER);
-    textSize(32); textStyle(BOLD); textFont('minhaFonte');
-    text("OBJECTIVE", x, y);
-
-    // Texto Variável (Aqui está a mágica)
-    textAlign(LEFT, CENTER);
-    textSize(24);
-    textFont('minhaFonte');
-
-    circle(x + 30, y + 85, 10); // Bullet point
-
-    // Monta a string: "MAKE DRINK" + " " + "0" + "/" + "1"
-    let textoFinal = `${tarefaTexto}  ${progressoAtual}/${totalNecessario}`;
-    text(textoFinal, x, y + 85);
-
-    pop();
-}
-
-function drawObjectiveBox(tarefaTexto, progressoAtual, totalNecessario) {
-    push();
-
     // 1. Preparar texto e medir larguras
     let textoFinal = `${tarefaTexto}  ${progressoAtual}/${totalNecessario}`;
 
@@ -63,8 +31,8 @@ function drawObjectiveBox(tarefaTexto, progressoAtual, totalNecessario) {
     let h = 80;
 
     // Posição: Centro da tela (ajuste o Y se quiser mais para cima)
-    let x = w/2+20;
-    let y = h/2+20; // Altura fixa para o exemplo
+    let x = w/2 + 20;
+    let y = h/2 + 20;
 
     // 3. Desenhar Caixa
     rectMode(CENTER);
@@ -101,14 +69,23 @@ function drawObjectiveBox(tarefaTexto, progressoAtual, totalNecessario) {
     text(textoFinal, x - larguraDoConteudo/2, conteudoY);
 
     pop();
+
+    // --- O SEGREDINHO QUE FALTAVA ---
+    // Retorna a borda inferior (Y + metade da altura)
+    return y + h/2;
 }
 
-function drawIngredientsList(listaDeItens) {
+function drawIngredientsList(listaDeItens, yInicial) {
+    // Se yInicial não for passado (for undefined), usamos um valor padrão para não quebrar
+    if (yInicial === undefined) {
+        yInicial = 100;
+    }
+
     push();
 
-    // 1. Calcular largura necessária (baseada no item mais longo)
+    // 1. Calcular largura necessária
     textSize(18);
-    let maxLarguraTexto = textWidth("NEEDS"); // Largura mínima
+    let maxLarguraTexto = textWidth("NEEDS");
 
     for (let item of listaDeItens) {
         let w = textWidth("- " + item);
@@ -123,12 +100,15 @@ function drawIngredientsList(listaDeItens) {
     let cabecalhoAltura = 35;
     let h = cabecalhoAltura + (listaDeItens.length * linhaAltura) + 10;
 
-    // 2. Posicionamento (Automaticamente abaixo da caixa de Objetivo)
-    // A caixa de cima está em Y=100 e tem altura 80. Logo, termina em 140.
-    // Damos +10 de margem -> Começa em 150.
-    // Como rect é CENTER, somamos metade da altura.
-    let x = w/2+20;
-    let y = h/2+120;
+    // 2. Posicionamento
+    let margem = 10; // Espaço entre as caixas
+
+    // O X deve ser igual ao da caixa de cima (w/2 + 20 na outra função)
+    // Mas como a largura W muda, vamos recalcular o centro baseada na largura desta caixa
+    let x = w/2 + 20;
+
+    // O Y é calculado a partir de onde a outra terminou
+    let y = yInicial + margem + (h / 2);
 
     // 3. Desenhar Fundo
     rectMode(CENTER);
@@ -144,7 +124,7 @@ function drawIngredientsList(listaDeItens) {
     textSize(22);
     textStyle(BOLD);
 
-    let topoY = y - h/2; // Topo exato do retângulo
+    let topoY = y - h/2;
     text("NEEDS", x, topoY + 18);
 
     // Linha
@@ -158,7 +138,7 @@ function drawIngredientsList(listaDeItens) {
     textStyle(NORMAL);
     textAlign(LEFT, CENTER);
 
-    let inicioTextoX = x - maxLarguraTexto/2; // Alinha à esquerda visualmente
+    let inicioTextoX = x - maxLarguraTexto/2;
     let itemY = topoY + 50;
 
     for (let i = 0; i < listaDeItens.length; i++) {
