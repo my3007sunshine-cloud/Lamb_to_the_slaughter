@@ -1,13 +1,12 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Evita barras de rolagem */
-  background-color: #f0f0f0;
   width: 100%;
   height: 100%;
+  overflow: hidden; /* Remove barras de rolagem */
+  background-color: #000; /* Fundo preto para melhor visualização */
 }
 
 canvas {
-  /* Remove a borda para uma experiência de tela cheia mais limpa */
-  display: block;
+  display: block; /* Remove margens inferiores padrão */
 }
