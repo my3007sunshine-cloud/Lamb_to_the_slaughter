@@ -173,8 +173,6 @@ function drawObjectiveBox(tarefaTexto, progressoAtual, totalNecessario) {
 
     let conteudoY = y + 20;
 
-    // Bolinha
-    circle(x - larguraDoConteudo/2 - 12, conteudoY, 6);
 
     // Texto
     textAlign(LEFT, CENTER);

@@ -1,15 +1,13 @@
 // =================================================================
-// NIVEL 1 - LOGIC (CORRIGIDO FINAL)
+// NIVEL 1 - LOGIC
 // =================================================================
 
 let glasses = [];
 let ingredients = [];
 let selectedGlassIndex = -1;
-let heldItem = null;
 let isGameInitialized = false;
 
-// Variável para guardar a mensagem de erro atual
-let currentErrorMessage = "Try Again";
+// REMOVIDO: let currentErrorMessage... (Já está no sketch.js)
 
 function setupNivel1() {
     // 1. Definição dos Copos
@@ -55,12 +53,11 @@ function drawNivel1() {
     if (nivel1Phase === 0) {
         if (!isVideoPlaying) {
             startLevelVideo('imagens/nivel1.mp4', 2);
-            // Callback para quando o vídeo terminar
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
                     setupNivel1();
-                    nivel1Phase = 1; // Vai para o jogo
+                    nivel1Phase = 1; 
                 });
             }
         }
@@ -103,21 +100,19 @@ function drawNivel1() {
 
         // 6. Vitória
         if (drinksProntos === 2) {
-            nivel1Phase = 2; // Vai para o vídeo final
+            nivel1Phase = 2; // Vai para vídeo final
         }
     }
 
-    // --- FASE 2: CONCLUSAO (CORRIGIDO) ---
+    // --- FASE 2: CONCLUSAO ---
     if (nivel1Phase === 2) {
         if (!isVideoPlaying) {
-            // Importante: Passamos '2' para manter o gameState aqui
-            startLevelVideo('imagens/nivel1.mp4', 2);
-
+            startLevelVideo('imagens/nivel1.mp4', 2); // Pode trocar por outro vídeo de final se tiver
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    gameState = 2;   // Mantém no nivel 1
-                    nivel1Phase = 4; // Mostra a tela "Next Level"
+                    gameState = 2;   
+                    nivel1Phase = 4; 
                 });
             }
         }
@@ -136,7 +131,7 @@ function drawNivel1() {
 }
 
 // =================================================================
-// DESENHO (DRAW)
+// FUNÇÕES AUXILIARES DE DESENHO
 // =================================================================
 
 function drawIngredients() {
@@ -144,11 +139,8 @@ function drawIngredients() {
         let isHover = (mouseX > item.x && mouseX < item.x + item.w &&
             mouseY > item.y && mouseY < item.y + item.h);
 
-        if (isHover) {
-            tint(255, 220); // Brilho ao passar o mouse
-        } else {
-            noTint();
-        }
+        if (isHover) tint(255, 220); 
+        else noTint();
 
         if (item.img) image(item.img, item.x, item.y, item.w, item.h);
         else { fill(150); rect(item.x + item.w/2, item.y + item.h/2, item.w, item.h); }
@@ -165,17 +157,17 @@ function drawGlasses() {
         imageMode(CENTER);
         rectMode(CENTER);
 
-        // --- 1. LÍQUIDO ---
+        // Líquido
         let liquidHeight = 0;
         let liquidColor = color(200);
 
-        if (g.state >= 2) { // Tem Whiskey
-            liquidColor = color(204, 102, 0, 200); // Âmbar
+        if (g.state >= 2) { // Whiskey
+            liquidColor = color(204, 102, 0, 200); 
             let percentage = g.whiskeyCount / g.maxWhiskey;
             liquidHeight = (g.h * 0.35) * percentage;
 
-            if (g.state === 3) { // Tem Soda
-                liquidHeight = g.h * 0.85; // Quase cheio
+            if (g.state === 3) { // Soda
+                liquidHeight = g.h * 0.85; 
                 liquidColor = color(230, 180, 100, 220);
             }
         }
@@ -185,26 +177,20 @@ function drawGlasses() {
             fill(liquidColor);
             noStroke();
             rectMode(CORNER);
-
             let lX = g.x - (g.w / 2) + margin;
             let lY = (g.y + g.h / 2) - liquidHeight - 5;
             let lW = g.w - (margin * 2);
-
             rect(lX, lY, lW, liquidHeight, 0, 0, 15, 15);
             rectMode(CENTER);
         }
 
-        // --- 2. GELO ---
+        // Gelo
         if (g.state >= 1) {
-            if(imgIceCube) {
-                image(imgIceCube, g.x, g.y + (g.h/4), 50, 50);
-            } else {
-                fill(200, 230, 255);
-                rect(g.x, g.y + (g.h/4), 40, 40);
-            }
+            if(imgIceCube) image(imgIceCube, g.x, g.y + (g.h/4), 50, 50);
+            else { fill(200, 230, 255); rect(g.x, g.y + (g.h/4), 40, 40); }
         }
 
-        // --- 3. IMAGEM DO COPO ---
+        // Borda Seleção
         if (i === selectedGlassIndex) {
             noFill();
             stroke(255, 0, 0);
@@ -212,6 +198,7 @@ function drawGlasses() {
             rect(g.x, g.y, g.w + 12, g.h + 12, 12);
         }
 
+        // Imagem Copo
         if (typeof imgcopo !== 'undefined' && imgcopo) {
             image(imgcopo, g.x, g.y, g.w, g.h);
         } else {
@@ -219,7 +206,7 @@ function drawGlasses() {
             rect(g.x, g.y, g.w, g.h);
         }
 
-        // --- 4. RÓTULO ---
+        // Rótulo
         fill(0);
         noStroke();
         textAlign(CENTER);
@@ -235,61 +222,52 @@ function drawHeldItemCursor() {
     translate(mouseX, mouseY);
     imageMode(CENTER);
 
-    if (heldItem === 'ice') {
-        if (imgIceCube) image(imgIceCube, 0, 0, 50, 50);
-        else { fill(0, 0, 255); rect(0, 0, 40, 40); }
-    }
+    if (heldItem === 'ice' && imgIceCube) image(imgIceCube, 0, 0, 50, 50);
     else if (heldItem === 'whiskey' && imgWhiskey) image(imgWhiskey, 0, 0, 60, 120);
     else if (heldItem === 'soda' && imgSoda) image(imgSoda, 0, 0, 60, 120);
+    else { fill(100); rect(0,0,30,30); }
 
     pop();
     imageMode(CORNER);
 }
 
-// nivel1.js
-
+// LOGICA DE CLIQUE
 function checkNivel1Click() {
-
-    // --- CLIQUE NA TELA DE NEXT LEVEL (PHASE 4) ---
+    // --- TELA NEXT LEVEL ---
     if (nivel1Phase === 4) {
-
-        // 1. Botão Central (Ir para Nível 2)
         const btnX = width / 2;
         const btnY = height / 2 + 50;
-        const btnW = 200;
-        const btnH = 60;
-
-        if (mouseX > btnX - btnW/2 && mouseX < btnX + btnW/2 &&
-            mouseY > btnY - btnH/2 && mouseY < btnY + btnH/2) {
-
-            gameState = 3; // Vai para o Nível 2
+        
+        // Botão Central
+        if (mouseX > btnX - 100 && mouseX < btnX + 100 &&
+            mouseY > btnY - 30 && mouseY < btnY + 30) {
+            gameState = 3; // Vai para Nível 2
+            nivel1Phase = 0; // Reseta
             return true;
         }
 
-        // --- NOVOS ÍCONES ---
         const iconY = height - 60;
         const homeX = 80;
         const retryX = 160;
-        const raioClick = 30; // Tamanho da área de clique
+        const raioClick = 30;
 
-        // 2. Clique na CASA (Voltar ao Menu)
+        // Casa
         if (dist(mouseX, mouseY, homeX, iconY) < raioClick) {
-            gameState = 0; // Menu Principal
-            nivel1Phase = 0; // Reseta fase do nível 1
+            gameState = 0; 
+            nivel1Phase = 0;
             return true;
         }
 
-        // 3. Clique na SETA (Reiniciar Nível 1)
+        // Retry
         if (dist(mouseX, mouseY, retryX, iconY) < raioClick) {
-            setupNivel1();   // Reseta variáveis do jogo
-            nivel1Phase = 1; // Vai direto para a fase de jogar (pula vídeo intro)
+            setupNivel1();
+            nivel1Phase = 1;
             return true;
         }
-
         return false;
     }
 
-    // --- CLIQUE NA TELA DE RETRY (PHASE 3 - Game Over) ---
+    // --- TELA RETRY ---
     if (nivel1Phase === 3) {
         const xButton = width / 2;
         const yButton = height / 2 + 100;
@@ -301,9 +279,9 @@ function checkNivel1Click() {
         return false;
     }
 
-    // --- CLIQUE DURANTE O JOGO (PHASE 1) ---
+    // --- JOGO ---
     if (nivel1Phase === 1) {
-        // Pegar ingrediente
+        // 1. Tenta pegar ingrediente
         for (let item of ingredients) {
             if (mouseX > item.x && mouseX < item.x + item.w &&
                 mouseY > item.y && mouseY < item.y + item.h) {
@@ -312,7 +290,7 @@ function checkNivel1Click() {
             }
         }
 
-        // Usar no copo
+        // 2. Tenta aplicar no copo
         for (let i = 0; i < glasses.length; i++) {
             let g = glasses[i];
             let left = g.x - (g.w / 2);
@@ -333,7 +311,7 @@ function checkNivel1Click() {
                 return true;
             }
         }
-        heldItem = null;
+        heldItem = null; // Clica no vazio solta o item
     }
 }
 
@@ -353,7 +331,7 @@ function applyIngredientToGlass(g, item) {
             g.whiskeyCount++;
             g.state = 2;
         } else if (g.state === 0) {
-            triggerFail("Need Ice first!");
+            triggerFail("Add Ice First!");
         }
     }
     else if (item === 'soda') {

@@ -4,13 +4,13 @@ function drawMenu() {
 
     // Título: "LAMB TO THE SLAUGHTER"
     fill(255, 0, 0);
-    textSize(80);
-    text("LAMB TO THE SLAUGHTER", width / 2, height / 2 - 120 + 60);
+    textSize(60);
+    text("LAMB TO THE SLAUGHTER", width / 2, height / 2 - 120 );
 
     // Subtítulo: "ROALD DAHL"
     fill(0);
     textSize(24);
-    text("ROALD DAHL", width / 2, height / 2 - 50 + 60);
+    text("ROALD DAHL", width / 2, height / 2 - 50);
 
     // Desenho do Botão INICIAR
     const xButton = width / 2;
