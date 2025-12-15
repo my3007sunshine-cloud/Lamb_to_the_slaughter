@@ -16,7 +16,7 @@ let nivelVideo;
 
 // Variáveis Globais de Interação
 let heldItem = null;
-let currentErrorMessage = "Try Again"; // MOVIDO PARA CÁ (GLOBAL)
+let currentErrorMessage = "Try Again"; 
 
 // Áudio
 let soundVolume = 0.5;
@@ -37,6 +37,10 @@ let imgWhiskey, imgSoda, imgIceBag, imgIceCube, imgcopo;
 // Assets do Minigame Nível 2
 let backgroundMiniGame2; 
 let imgPernil, imgFrango, imgVegetables, imgGelo;
+
+// NÍVEL 4: Arrays para armazenar as 15 imagens de sorriso e seus fundos
+let smileImages = []; 
+let smileBackgrounds = []; 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -62,7 +66,19 @@ function setup() {
     imgPernil = loadImage('imagens/lamb.png');       
     imgFrango = loadImage('imagens/frango.png');
     imgVegetables = loadImage('imagens/vegetables.png');
-    imgGelo = loadImage('imagens/gelo.png'); // Adicionado para carregar imgGelo se usado no nível 2
+    imgGelo = loadImage('imagens/gelo.png'); 
+    
+    // NÍVEL 4: Carregamento dos 15 Sorrisos e Fundos
+    for (let i = 1; i <= 15; i++) {
+        // Assume que o nome é 'imagens/sorrisoX.png'
+        let img = loadImage(`imagens/sorriso${i}.png`); 
+        smileImages.push(img);
+        
+        // Assume que o nome é 'imagens/background_sorrisoX.png'
+        let bg = loadImage(`imagens/background_sorriso${i}.png`);
+        smileBackgrounds.push(bg);
+    }
+    
   } catch (e) {
     console.log("Erro ao carregar imagens:", e);
   }
@@ -100,16 +116,16 @@ function draw() {
       drawNivel2();
       drawBtnVoltar();
       break;
-    case 4: // Nível 3 (Placeholder)
-      drawNivelPlaceholder(3, textureBackground);
+    case 4: // Nível 3
+      drawNivel3(); 
       drawBtnVoltar();
       break;
-    case 5: // Nível 4 (Placeholder)
-      drawNivelPlaceholder(4, textureBackground);
+    case 5: // Nível 4
+      drawNivel4();
       drawBtnVoltar();
       break;
-    case 6: // Nível 5 (Placeholder)
-      drawNivelPlaceholder(5, textureBackground);
+    case 6: // Nível 5
+      drawNivel5();
       drawBtnVoltar();
       break;
     default:
@@ -146,13 +162,13 @@ function mousePressed() {
       checkNivel2Click();
       break;
     case 4:
-      if(typeof checkNivel3Click !== 'undefined') checkNivel3Click();
+      checkNivel3Click(); 
       break;
     case 5:
-      if(typeof checkNivel4Click !== 'undefined') checkNivel4Click();
+      checkNivel4Click(); 
       break;
     case 6:
-      if(typeof checkNivel5Click !== 'undefined') checkNivel5Click();
+      checkNivel5Click(); 
       break;
   }
 }
@@ -182,7 +198,6 @@ function mouseReleased() {
   isDraggingVolume = false;
   
   // Soltar item no Nível 2 (Drag and Drop)
-  // Nota: Nível 1 usa clique para pegar e clique para soltar, então não limpamos heldItem aqui para o Nivel 1
   if (gameState === 3) {
       heldItem = null;
   }
@@ -190,7 +205,7 @@ function mouseReleased() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  BTN_VOLTAR = { x: width - 80, y: 50, w: 100, h: 40 }; // Recalcula posição do botão
+  BTN_VOLTAR = { x: width - 80, y: 50, w: 100, h: 40 }; 
   
   if (nivelVideo) {
     nivelVideo.size(width, height);
@@ -199,6 +214,9 @@ function windowResized() {
   // Reinicia posições se necessário (opcional)
   if (gameState === 2) setupNivel1();
   if (gameState === 3) setupNivel2();
+  if (gameState === 4) setupNivel3();
+  if (gameState === 5) setupNivel4(); 
+  if (gameState === 6) setupNivel5();
 }
 
 // --- FUNÇÕES AUXILIARES ---
@@ -220,7 +238,7 @@ function drawBtnVoltar() {
   fill(255);
   textSize(16);
   textAlign(CENTER, CENTER);
-  text("BACK", BTN_VOLTAR.x, BTN_VOLTAR.y); // Mudei para inglês para manter consistência
+  text("BACK", BTN_VOLTAR.x, BTN_VOLTAR.y); 
   pop();
 }
 
@@ -232,6 +250,9 @@ function goBackToMap() {
   // Reseta fases dos níveis ao sair
   nivel1Phase = 0; 
   nivel2Phase = 0;
+  nivel3Phase = 0;
+  nivel4Phase = 0;
+  nivel5Phase = 0;
   heldItem = null;
 }
 
@@ -259,8 +280,6 @@ function drawNivelPlaceholder(nivelNum, imagemDeFundo) {
   textSize(32);
   text(`LEVEL ${nivelNum} - COMING SOON`, width / 2, height / 2);
 }
-
-// --- sketch.js (Adiciona isto no final do ficheiro) ---
 
 function drawVideoPlaceholder(titulo) {
     // 1. Fundo Preto
@@ -291,7 +310,6 @@ function drawVideoPlaceholder(titulo) {
     text("CONTINUE >>", btnX, btnY);
 }
 
-// Função auxiliar para verificar se clicou no botão "Continuar"
 function checkPlaceholderClick() {
     const btnX = width / 2;
     const btnY = height / 2 + 100;
