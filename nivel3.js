@@ -100,7 +100,7 @@ function drawNivel3() {
 
     // --- FASE 4: PRÓXIMO NÍVEL ---
     if (nivel3Phase === 4) {
-        drawNextLevel();
+        drawNextLevel("Cooking the Evidence", "ALIBI COOKING.", "PREPARE ACT");
     }
 }
 

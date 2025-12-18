@@ -166,7 +166,7 @@ function drawNivel5() {
 
     // --- FASE 4: CONCLUSÃO ---
     if (nivel5Phase === 4) {
-        drawNextLevel(); 
+        drawNextLevel("Case Closed", "THE PERFECT CRIME.", "MAIN MENU"); 
     }
 }
 

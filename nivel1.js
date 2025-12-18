@@ -117,7 +117,8 @@ function drawNivel1() {
 
     // --- FASE 4: TELA NÍVEL SEGUINTE ---
     if (nivel1Phase === 4) {
-        drawNextLevel();
+        // Título, Subtítulo, Texto Botão
+        drawNextLevel("The Routine", "HUSBAND SERVED.", "FIND SUPPER");
     }
 }
 

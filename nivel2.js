@@ -195,7 +195,7 @@ function drawNivel2() {
 
     // --- FASE 4: NEXT LEVEL ---
     if (nivel2Phase === 4) {
-        drawNextLevel(); 
+        drawNextLevel("The Incident", "WEAPON ACQUIRED.", "DESTROY EVIDENCE");
     }
 }
 

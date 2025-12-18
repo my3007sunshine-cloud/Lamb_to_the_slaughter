@@ -2,8 +2,11 @@
 // TELA NÍVEL SEGUINTE - ESTILO NOIR (PRETO, BRANCO, VERMELHO)
 // =================================================================
 
-function drawNextLevel() {
-    // 1. Fundo (Escuro para contraste)
+// EM addicionalScreen.js
+
+// Agora a função recebe: (Titulo, Subtitulo, TextoDoBotao)
+function drawNextLevel(titleText, subTitleText, buttonText) {
+    // 1. Fundo
     background(20); 
 
     push();
@@ -12,60 +15,35 @@ function drawNextLevel() {
     // 2. O Cartão / Papel
     rectMode(CENTER);
     noStroke();
+    fill(0); rect(10, 10, 500, 400); // Sombra
+    fill(255); stroke(0); strokeWeight(2); rect(0, 0, 500, 400); // Papel
 
-    // Sombra dura (Preto puro)
-    fill(0);
-    rect(10, 10, 500, 400);
-
-    // Papel (Branco Puro)
-    fill(255); 
-    stroke(0); 
-    strokeWeight(2);
-    rect(0, 0, 500, 400);
-
-    // 3. Linhas Pautadas (Cinza para não distrair)
-    stroke(200); 
-    strokeWeight(1);
+    // 3. Linhas Pautadas
+    stroke(200); strokeWeight(1);
     let startY = -150;
     for (let i = 0; i < 8; i++) {
         line(-230, startY + (i * 40), 230, startY + (i * 40));
     }
-    
-    // Linha da margem (Vermelho - a única cor além de P&B)
-    stroke(200, 0, 0, 150); 
-    strokeWeight(1);
+    stroke(200, 0, 0, 150); strokeWeight(1); // Margem vermelha
     line(-200, -195, -200, 195);
 
-    // 4. Mancha (Vermelho sangue)
-    noStroke();
-    fill(200, 0, 0, 40); 
-    ellipse(200, 130, 50, 45);
+    // 4. Mancha
+    noStroke(); fill(200, 0, 0, 40); ellipse(200, 130, 50, 45);
     
-    // 5. Texto no Cartão
-    fill(0); // Preto absoluto
-    textAlign(CENTER, CENTER);
+    // 5. Texto Variável
+    fill(0); textAlign(CENTER, CENTER);
     
-    // Título
-    textSize(30);
-    textStyle(ITALIC); 
-    text("Dinner Preparations", 0, -160);
+    // Título Variável
+    textSize(30); textStyle(ITALIC); 
+    text(titleText || "Mission Complete", 0, -160);
     
-    // Subtítulo de sucesso (Vermelho para destaque)
-    textSize(22);
-    textStyle(BOLD);
-    fill(200, 0, 0); 
-    text("TASK COMPLETED.", 0, -80);
+    // Subtítulo Variável
+    textSize(22); textStyle(BOLD); fill(200, 0, 0); 
+    text(subTitleText || "TASK COMPLETED.", 0, -80);
     
-    // Checkmark (Vermelho)
-    noFill();
-    stroke(200, 0, 0);
-    strokeWeight(4);
-    beginShape();
-    vertex(-20, -10);
-    vertex(-5, 5);
-    vertex(20, -20);
-    endShape();
-    
+    // Checkmark
+    noFill(); stroke(200, 0, 0); strokeWeight(4);
+    beginShape(); vertex(-20, -10); vertex(-5, 5); vertex(20, -20); endShape();
     pop();
 
     // =================================================================
@@ -76,47 +54,30 @@ function drawNextLevel() {
     const btnX = width / 2;
     const btnY = height / 2 + 50;
     
-    // Círculo Vermelho (Estilo marcador)
-    noFill();
-    stroke(200, 0, 0);
-    strokeWeight(4);
-    circle(btnX, btnY, 100);
-
-    // Seta Vermelha
-    fill(200, 0, 0);
-    noStroke();
-    triangle(btnX - 12, btnY - 18, btnX - 12, btnY + 18, btnX + 18, btnY);
+    noFill(); stroke(200, 0, 0); strokeWeight(4); circle(btnX, btnY, 100); // Circulo
+    fill(200, 0, 0); noStroke(); 
+    triangle(btnX - 12, btnY - 18, btnX - 12, btnY + 18, btnX + 18, btnY); // Seta
     
-    textAlign(CENTER);
-    textSize(16);
-    textStyle(BOLD);
-    fill(0); // Texto preto para contraste no papel branco
-    text("NEXT STEP", btnX, btnY + 75);
+    textAlign(CENTER); textSize(16); textStyle(BOLD); fill(0);
+    text(buttonText || "NEXT STEP", btnX, btnY + 75); // Texto do botão variável
 
-    // --- BOTÕES INFERIORES (MENU / REPLAY) ---
+    // --- BOTÕES INFERIORES ---
     const iconY = height - 60;
     const homeX = width / 2 - 100;
     const retryX = width / 2 + 100;
 
-    textSize(14);
-    textStyle(BOLD);
+    textSize(14); textStyle(BOLD);
     
-    // Menu (Branco sobre fundo preto)
-    fill(255);
-    noStroke();
-    text("MENU", homeX, iconY + 35);
-    
-    stroke(255); strokeWeight(2); noFill();
-    rectMode(CENTER);
+    // Menu
+    fill(255); noStroke(); text("MENU", homeX, iconY + 35);
+    stroke(255); strokeWeight(2); noFill(); rectMode(CENTER);
     rect(homeX, iconY, 25, 25);
     line(homeX - 8, iconY, homeX + 8, iconY);
     line(homeX - 8, iconY - 6, homeX + 8, iconY - 6);
     line(homeX - 8, iconY + 6, homeX + 8, iconY + 6);
 
-    // Replay (Branco sobre fundo preto)
-    noStroke(); fill(255);
-    text("REDO", retryX, iconY + 35);
-    
+    // Replay
+    noStroke(); fill(255); text("REDO", retryX, iconY + 35);
     stroke(255); noFill();
     arc(retryX, iconY, 25, 25, -PI + 0.5, PI - 0.5);
     noStroke(); fill(255);

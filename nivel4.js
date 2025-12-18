@@ -107,7 +107,9 @@ function drawNivel4() {
         return;
     }
     if (nivel4Phase === 3) drawRetryScreen(currentErrorMessage);
-    if (nivel4Phase === 4) drawNextLevel();
+   if (nivel4Phase === 4) {
+        drawNextLevel("The Performance", "READY TO LIE.", "FACE POLICE");
+    }
 }
 
 function drawArrow(x, y, size, direction) {
