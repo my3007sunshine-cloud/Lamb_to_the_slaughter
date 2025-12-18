@@ -293,38 +293,57 @@ function handleVideoSkip() {
   // --- NÍVEL 2 (GameState 3) ---
   else if (gameState === 3) {
     if (nivel2Phase === 0) {
-      // Pular Intro Vídeo -> Vai para o Gameplay
       forceSkipVideo(() => { setupNivel2(); nivel2Phase = 1; });
     } 
     else if (nivel2Phase === 2) {
-      // Pular Outro Vídeo -> Vai para a tela de Next Level
       forceSkipVideo(() => { gameState = 3; nivel2Phase = 4; });
     }
   }
   
-  if (gameState === 6) {
-      
-      // Se estiver a pular a Intro
+  // --- NÍVEL 3 (GameState 4) [ADICIONADO] ---
+  else if (gameState === 4) {
+    if (nivel3Phase === 0) {
+        // Pular Vídeo do Crime -> Inicia Jogo da Cozinha
+        forceSkipVideo(() => { setupNivel3(); nivel3Phase = 1; });
+    }
+    else if (nivel3Phase === 2) {
+        // Pular Vídeo do Espelho -> Vai para Tela Final
+        forceSkipVideo(() => { nivel3Phase = 4; });
+    }
+  }
+
+  // --- NÍVEL 4 (GameState 5) [ADICIONADO] ---
+  else if (gameState === 5) {
+    if (nivel4Phase === 0) {
+        // Pular Intro Sorriso -> Inicia Jogo
+        forceSkipVideo(() => { setupNivel4(); nivel4Phase = 1; });
+    }
+    else if (nivel4Phase === 2) {
+        // Pular Conclusão -> Vai para Tela Final
+        forceSkipVideo(() => { nivel4Phase = 4; });
+    }
+  }
+
+  // --- NÍVEL 5 (GameState 6) ---
+  else if (gameState === 6) {
+      // Pular Intro Geral do Nível 5
       if (nivel5Phase === 0) {
           forceSkipVideo(() => { 
               setupNivel5(); 
               nivel5Phase = 1; 
           });
       }
-      // Se estiver a pular um Vídeo de Cena (durante o jogo)
-      else if (nivel5Phase === 1 && n5_subState === 0) {
-          forceSkipVideo(() => { 
-              n5_subState = 1; // Pula direto para o Quiz
-          });
-      }
-      // Se estiver a pular o Vídeo Final
-      else if (nivel5Phase === 2) {
-          forceSkipVideo(() => { 
-              nivel5Phase = 4; // Vai para a tela final
-          });
+      // Pular Intro de cada CENA (dentro do jogo)
+      // Nota: Verifica se n5_subState é 0 (Video Intro) ou 2 (Video Feedback)
+      else if (nivel5Phase === 1) {
+          if (n5_subState === 0) {
+             forceSkipVideo(() => { n5_subState = 1; }); // Vai para o Quiz
+          } 
+          else if (n5_subState === 2) {
+             forceSkipVideo(() => { n5_subState = 3; }); // Vai para a Transição
+          }
       }
   }
-  // (Futuramente podes adicionar aqui os blocos para gameState 4, 5, etc.)
 }
 
 // Placeholders Genéricos
