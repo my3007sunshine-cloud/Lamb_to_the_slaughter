@@ -28,8 +28,8 @@ function setupNivel2() {
     freezerArea.h = height * 0.55; // Aumentado ligeiramente para 55% da altura
     
     // POSICIONAMENTO CENTRALIZADO NA TELA:
-    freezerArea.x = (width - freezerArea.w) / 2; // Centralizado horizontalmente
-    freezerArea.y = (height - freezerArea.h) / 2; // AGORA CENTRADO VERTICALMENTE
+    freezerArea.x = (width - freezerArea.w) *0.4; // Centralizado horizontalmente
+    freezerArea.y = (height - freezerArea.h) *0.4; // AGORA CENTRADO VERTICALMENTE
     
     // 2. Definir o Alvo (Pernil) - Centralizado na Arca
     // Calcular a posição ideal (canto superior esquerdo) para centrar o objeto
