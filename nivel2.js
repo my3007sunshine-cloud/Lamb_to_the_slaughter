@@ -171,9 +171,20 @@ function drawNivel2() {
     }
 
     // --- FASE 2: CONCLUSÃO ---
-    if (nivel2Phase === 2) {
-        if (typeof drawVideoPlaceholder === 'function') drawVideoPlaceholder("FOUND IT!");
-        else { gameState = 3; nivel2Phase = 4; }
+   if (nivel2Phase === 2) {
+        // Se o vídeo não estiver tocando, inicia o vídeo da Parte 2
+        if (!isVideoPlaying) {
+            // Certifique-se de que o arquivo de vídeo está na pasta correta, ex: 'imagens/'
+            startLevelVideo('imagens/Nivel2_parte2.mp4', 2); 
+            
+            if (nivelVideo) {
+                nivelVideo.onended(() => {
+                    stopAndCleanVideo();
+                    gameState = 3;  // Define o estado global como "fim de jogo" ou transição
+                    nivel2Phase = 4; // Vai para o menu de "Next Level"
+                });
+            }
+        }
         return;
     }
 
@@ -198,8 +209,12 @@ function checkNivel2Click() {
     }
     // Phase 2: Fim
     if (nivel2Phase === 2) {
-        if (typeof checkPlaceholderClick === 'function' && checkPlaceholderClick()) {
-            gameState = 3; nivel2Phase = 4; return true;
+        // Se o jogador clicar durante o vídeo, para o vídeo e avança
+        if (isVideoPlaying) {
+            stopAndCleanVideo();
+            gameState = 3; 
+            nivel2Phase = 4; 
+            return true;
         }
         return false;
     }
