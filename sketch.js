@@ -259,10 +259,16 @@ function goBackToMap() {
 function handleVideoSkip() {
   // Lógica de Pular específica do Nível 1
   if (gameState === 2) {
+    
+    // Se pular o vídeo de INTRO -> Vai para o JOGO (Fase 1)
     if (nivel1Phase === 0) {
-      forceSkipVideo(() => { nivel1Phase = 1; }); // Pula Intro -> Jogo
-    } else if (nivel1Phase === 2) {
-      // Pula Conclusão -> Tela de Próximo Nível (Phase 4)
+      forceSkipVideo(() => { 
+          setupNivel1(); // Garante que o setup rode
+          nivel1Phase = 1; 
+      }); 
+    } 
+    // Se pular o vídeo de CONCLUSÃO -> Vai para TELA PRÓXIMO NÍVEL (Fase 4)
+    else if (nivel1Phase === 2) {
       forceSkipVideo(() => {
         gameState = 2; 
         nivel1Phase = 4;

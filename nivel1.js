@@ -52,19 +52,22 @@ function drawNivel1() {
     // --- FASE 0: VÍDEO INTRO ---
     if (nivel1Phase === 0) {
         if (!isVideoPlaying) {
+            // Inicia o vídeo e define o que acontece quando acaba
             startLevelVideo('imagens/nivel1.mp4', 2);
+            
+            // Sobrescreve o comportamento padrão para mudar apenas a FASE, não o gameState
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    setupNivel1();
-                    nivel1Phase = 1; 
+                    setupNivel1();   // Reseta/Prepara o jogo
+                    nivel1Phase = 1; // Vai para o Minigame
                 });
             }
         }
         return;
     }
 
-    // --- FASE 1: JOGO ---
+    // --- FASE 1: JOGO (MINIGAME) ---
     if (nivel1Phase === 1) {
         if (!isGameInitialized) setupNivel1();
 
@@ -75,13 +78,11 @@ function drawNivel1() {
             background(200);
         }
 
-        // 2. Ingredientes (Atrás)
+        // 2. Desenhos do Jogo
         drawIngredients();
-
-        // 3. Copos (Na frente)
         drawGlasses();
 
-        // 4. UI (Objetivos)
+        // 3. UI (Objetivos)
         let drinksProntos = glasses.filter(g => g.state === 3).length;
         let yFimCaixa = drawObjectiveBox("PREPARE DRINKS", drinksProntos, 2);
 
@@ -93,40 +94,43 @@ function drawNivel1() {
             "3. Add Soda"
         ], yFimCaixa);
 
-        // 5. Cursor (Item na mão)
+        // 4. Cursor
         if (heldItem) {
             drawHeldItemCursor();
         }
 
-        // 6. Vitória
+        // 5. VERIFICAÇÃO DE VITÓRIA
         if (drinksProntos === 2) {
-            nivel1Phase = 2; // Vai para vídeo final
+            // Assim que ganhar, vai para a Fase 2 (Vídeo de Conclusão)
+            nivel1Phase = 2; 
         }
     }
 
-    // --- FASE 2: CONCLUSAO ---
+    // --- FASE 2: VÍDEO DE CONCLUSÃO ---
     if (nivel1Phase === 2) {
         if (!isVideoPlaying) {
-            startLevelVideo('imagens/nivel1.mp4', 2); // Pode trocar por outro vídeo de final se tiver
+            startLevelVideo('imagens/nivel1_end.mp4', 2);
+            
+            // Sobrescreve para garantir que vá para a tela "Level Next" (Fase 4)
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    gameState = 2;   
-                    nivel1Phase = 4; 
+                    gameState = 2;   // Mantém no Nível 1 por enquanto
+                    nivel1Phase = 4; // Mostra a tela de "Nível Seguinte"
                 });
             }
         }
         return;
     }
 
-    // --- FASE 3: RETRY ---
+    // --- FASE 3: TELA DE ERRO (RETRY) ---
     if (nivel1Phase === 3) {
         drawRetryScreen(currentErrorMessage);
     }
 
-    // --- FASE 4: NEXT LEVEL SCREEN ---
+    // --- FASE 4: TELA NÍVEL SEGUINTE ---
     if (nivel1Phase === 4) {
-        drawNextLevel();
+        drawNextLevel(); // Desenha a tela com o botão para ir ao Nível 2
     }
 }
 

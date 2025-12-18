@@ -1,7 +1,9 @@
 // videoControl.js
 
+// EM videoControl.js
+
 function startLevelVideo(videoPath, finalGameState) {
-    // Limpa vídeo anterior
+    // 1. Limpa vídeo anterior se existir
     if (nivelVideo) {
         nivelVideo.remove();
         nivelVideo = null;
@@ -9,18 +11,26 @@ function startLevelVideo(videoPath, finalGameState) {
 
     console.log("Carregando vídeo: " + videoPath);
 
-    // Cria o elemento de vídeo
+    // 2. Cria o vídeo
     nivelVideo = createVideo(videoPath, () => {
         console.log("Vídeo carregado.");
-        nivelVideo.volume(0);
+
+        // --- O SEGREDO ESTÁ AQUI ---
+        // Verifica o valor da variável global 'soundVolume' (definida pelo slider)
+        let volumeParaAplicar = (typeof soundVolume !== 'undefined') ? soundVolume : 1.0;
+
+        // Aplica esse volume ao vídeo
+        nivelVideo.volume(volumeParaAplicar);
+        
+        console.log("Volume definido para: " + volumeParaAplicar);
+        // ---------------------------
+
         nivelVideo.loop(false);
         nivelVideo.play();
     });
 
-    // Esconde o elemento HTML para desenhá-lo no Canvas
-    nivelVideo.hide();
+    nivelVideo.hide(); 
 
-    // Define o callback padrão de fim
     nivelVideo.onended(() => {
         stopAndCleanVideo();
         gameState = finalGameState;

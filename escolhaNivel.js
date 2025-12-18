@@ -115,10 +115,15 @@ function checkVolumeClick() {
 }
 
 function updateVolume() {
-    const soundX_Center = width / 2 + AF_CENTRO;
+    const soundX_Center = width / 2 + AF_CENTRO; // Certifica-te que AF_CENTRO está definido
     const soundAreaMinX = soundX_Center - SLIDER_LENGTH / 2;
     const soundAreaMaxX = soundX_Center + SLIDER_LENGTH / 2;
 
+    // Calcula o volume baseado na posição do rato (de 0 a 1)
     soundVolume = map(mouseX, soundAreaMinX, soundAreaMaxX, 0, 1);
+    
+    // Impede que o volume passe de 1 ou seja menor que 0
     soundVolume = constrain(soundVolume, 0, 1);
+    
+ 
 }
