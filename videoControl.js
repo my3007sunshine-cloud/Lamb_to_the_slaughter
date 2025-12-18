@@ -1,7 +1,5 @@
 // videoControl.js
 
-// EM videoControl.js
-
 function startLevelVideo(videoPath, finalGameState) {
     // 1. Limpa vídeo anterior se existir
     if (nivelVideo) {
@@ -15,22 +13,24 @@ function startLevelVideo(videoPath, finalGameState) {
     nivelVideo = createVideo(videoPath, () => {
         console.log("Vídeo carregado.");
 
-        // --- O SEGREDO ESTÁ AQUI ---
-        // Verifica o valor da variável global 'soundVolume' (definida pelo slider)
+        // --- Volume ---
         let volumeParaAplicar = (typeof soundVolume !== 'undefined') ? soundVolume : 1.0;
-
-        // Aplica esse volume ao vídeo
         nivelVideo.volume(volumeParaAplicar);
-        
         console.log("Volume definido para: " + volumeParaAplicar);
-        // ---------------------------
-
-        nivelVideo.loop(false);
+        
+        // --- CORREÇÃO AQUI ---
+        // Em vez de nivelVideo.loop(false), usamos a propriedade do elemento DOM
+        // ou simplesmente não chamamos .loop(), pois o .play() toca apenas uma vez por defeito.
+        if (nivelVideo.elt) {
+            nivelVideo.elt.loop = false; 
+        }
+        
         nivelVideo.play();
     });
 
     nivelVideo.hide(); 
 
+    // Define o comportamento padrão de fim (será sobrescrito no nivel1.js, o que é correto)
     nivelVideo.onended(() => {
         stopAndCleanVideo();
         gameState = finalGameState;
@@ -50,9 +50,7 @@ function stopAndCleanVideo() {
 
 function drawLevelVideo() {
     if (nivelVideo && isVideoPlaying) {
-        // O SEGREDO: Desenha o vídeo esticado no tamanho total do canvas
         image(nivelVideo, 0, 0, width, height);
-
         drawSkipButton();
     }
 }
