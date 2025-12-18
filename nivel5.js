@@ -1,99 +1,99 @@
 // =================================================================
-// NIVEL 5 - O INTERROGATÓRIO
+// NIVEL 5 - THE INTERROGATION
 // =================================================================
 
-// Estrutura de dados: Cada cena tem um par de vídeos (Intro e Feedback)
+// Data Structure: Each scene has Intro Video and Feedback Video
 const n5_cenas = [
     {
-        titulo: "Cena 1: A Chegada da Polícia",
+        titulo: "Scene 1: The Arrival",
         videoIntro: "imagens/Nivel5_cena1.mp4", 
-        pergunta: "Patrick está morto. Os polícias entraram. O que deve fazer para parecer genuína?",
+        pergunta: "Patrick is dead. The police have entered. What must you do to appear genuine?",
         opcoes: [
-            "A. Ficar calma e apontar para o telefone.",
-            "B. Gritar que o odeia e que foi um assassinato.",
-            "C. Cair nos braços de Jack Noonan, chorando histericamente.",
-            "D. Correr para a cozinha e apagar o forno."
+            "A. Stay calm and point to the phone.",
+            "B. Scream that you hate him and it was murder.",
+            "C. Fall into Jack Noonan's arms, crying hysterically.",
+            "D. Run to the kitchen and turn off the oven."
         ],
         correta: 2, // C
         videoFeedback: "imagens/Nivel5_cena1f.mp4" 
     },
     {
-        titulo: "Cena 2: O Que Dizer sobre a Carne",
+        titulo: "Scene 2: The Meat Story",
         videoIntro: "imagens/Nivel5_cena2.mp4", 
-        pergunta: "Perguntam sobre o assado no forno. Como justificar o álibi?",
+        pergunta: "They ask about the roast in the oven. How do you justify the alibi?",
         opcoes: [
-            "A. Dizer que se esqueceu dele quando saiu.",
-            "B. Dizer que ia cozinhar, mas Patrick não quis.",
-            "C. Dizer que o pôs a assar para o jantar e foi buscar legumes.",
-            "D. Dizer que iam jantar fora, tornando o assado irrelevante."
+            "A. Say you forgot about it when you went out.",
+            "B. Say you were going to cook, but Patrick didn't want to.",
+            "C. Say you put it in to roast for supper and went out for vegetables.",
+            "D. Say you were going to dine out, making the roast irrelevant."
         ],
         correta: 2, // C
-        videoFeedback: null // <--- SEM VÍDEO DE CONCLUSÃO AQUI
+        videoFeedback: null // No conclusion video here
     },
     {
-        titulo: "Cena 3: A Busca Pela Arma",
+        titulo: "Scene 3: The Weapon Search",
         videoIntro: "imagens/Nivel5_cena3.mp4", 
-        pergunta: "Procuram algo de metal pesado (Spanner). Como desviar a atenção?",
+        pergunta: "They are looking for a heavy metal object (Spanner). How do you divert attention?",
         opcoes: [
-            "A. Mencionar a perna de borrego congelada.",
-            "B. Sugerir que olhem no lixo da cozinha.",
-            "C. Dizer que talvez haja um spanner na garagem.",
-            "D. Dizer que o objeto foi levado pelo assassino."
+            "A. Mention the frozen leg of lamb.",
+            "B. Suggest they look in the kitchen trash.",
+            "C. Say there might be a spanner in the garage.",
+            "D. Say the object was likely taken by the killer."
         ],
         correta: 3, // D
         videoFeedback: "imagens/Nivel5_cena3f.mp4" 
     },
     {
-        titulo: "Cena 4: A Quebra do Protocolo",
+        titulo: "Scene 4: Breaking Protocol",
         videoIntro: "imagens/Nivel5_cena4.mp4", 
-        pergunta: "Os polícias estão cansados. Como introduzir uma distração?",
+        pergunta: "The police are tired. How do you introduce a distraction?",
         opcoes: [
-            "A. Oferecer-se para ajudar na busca.",
-            "B. Pedir um whisky para si e convidar Noonan a beber.",
-            "C. Chorar incontrolavelmente para parar tudo.",
-            "D. Perguntar sobre impressões digitais."
+            "A. Offer to help with the search.",
+            "B. Ask for a whiskey for yourself and invite Noonan to drink.",
+            "C. Cry uncontrollably to stop everything.",
+            "D. Ask about fingerprints."
         ],
         correta: 1, // B
         videoFeedback: "imagens/Nivel5_cena4f.mp4" 
     },
     {
-        titulo: "Cena 5: O Convite Fatal",
+        titulo: "Scene 5: The Fatal Invitation",
         videoIntro: "imagens/Nivel5_cena5.mp4", 
-        pergunta: "Como persuadir os polícias a comerem a arma do crime?",
+        pergunta: "How do you persuade the police to eat the murder weapon?",
         opcoes: [
-            "A. Exigir que comam para limpar o frigorífico.",
-            "B. Dizer que a comida está contaminada.",
-            "C. Apelar à amizade e insistir que seria um favor para ela.",
-            "D. Dizer que é uma punição por Patrick não gostar."
+            "A. Demand they eat to clean the fridge.",
+            "B. Say the food is contaminated.",
+            "C. Appeal to friendship and insist it would be a favor to her.",
+            "D. Say it is a punishment because Patrick didn't like it."
         ],
         correta: 2, // C
         videoFeedback: "imagens/Nivel5_cena5f.mp4" 
     }
 ];
 
-// Estados Internos
+// Internal States
 let n5_currentSceneIndex = 0; 
-// 0: VIDEO INTRO | 1: QUIZ | 2: VIDEO FEEDBACK | 3: TELA DE PASSAGEM | 4: ERRO
+// 0: VIDEO INTRO | 1: QUIZ | 2: VIDEO FEEDBACK | 3: TRANSITION SCREEN | 4: ERROR
 let n5_subState = 0; 
 
 function setupNivel5() {
-    console.log("Iniciando Nivel 5...");
+    console.log("Starting Level 5...");
     n5_currentSceneIndex = 0;
     n5_subState = 0; 
     nivel5Phase = 1; 
 }
 
 function drawNivel5() {
-    // --- FASE 0: SETUP ---
+    // --- PHASE 0: SETUP ---
     if (nivel5Phase === 0) {
         setupNivel5();
         return;
     }
 
-    // --- FASE 1: O JOGO ---
+    // --- PHASE 1: THE GAME ---
     if (nivel5Phase === 1) {
         
-        // Fundo
+        // Background
         if (typeof backgroundMiniGame2 !== 'undefined' && backgroundMiniGame2) {
             image(backgroundMiniGame2, 0, 0, width, height);
         } else {
@@ -101,7 +101,7 @@ function drawNivel5() {
         }
 
         // -------------------------------------------------
-        // ESTADO 0: VIDEO INTRO
+        // STATE 0: VIDEO INTRO
         // -------------------------------------------------
         if (n5_subState === 0) {
             if (!isVideoPlaying) {
@@ -110,7 +110,7 @@ function drawNivel5() {
                 if (nivelVideo) {
                     nivelVideo.onended(() => {
                         stopAndCleanVideo();
-                        n5_subState = 1; // Vai para Quiz
+                        n5_subState = 1; // Go to Quiz
                     });
                 }
             }
@@ -118,20 +118,19 @@ function drawNivel5() {
         } 
         
         // -------------------------------------------------
-        // ESTADO 1: QUIZ
+        // STATE 1: QUIZ
         // -------------------------------------------------
         else if (n5_subState === 1) {
             drawNivel5Quiz();
         } 
         
         // -------------------------------------------------
-        // ESTADO 2: VIDEO FEEDBACK
+        // STATE 2: VIDEO FEEDBACK
         // -------------------------------------------------
         else if (n5_subState === 2) {
             if (!isVideoPlaying) {
                 let vFeed = n5_cenas[n5_currentSceneIndex].videoFeedback;
                 
-                // Segurança extra: se não houver vídeo, salta logo
                 if (!vFeed) {
                     n5_subState = 3;
                     return;
@@ -141,7 +140,7 @@ function drawNivel5() {
                 if (nivelVideo) {
                     nivelVideo.onended(() => {
                         stopAndCleanVideo();
-                        n5_subState = 3; // Vai para Tela de Passagem
+                        n5_subState = 3; // Go to Transition
                     });
                 }
             }
@@ -149,14 +148,14 @@ function drawNivel5() {
         }
 
         // -------------------------------------------------
-        // ESTADO 3: TELA DE PASSAGEM
+        // STATE 3: TRANSITION SCREEN
         // -------------------------------------------------
         else if (n5_subState === 3) {
             drawNivel5Transition();
         } 
         
         // -------------------------------------------------
-        // ESTADO 4: ERRO
+        // STATE 4: ERROR
         // -------------------------------------------------
         else if (n5_subState === 4) {
             drawNivel5Error();
@@ -164,13 +163,13 @@ function drawNivel5() {
         return;
     }
 
-    // --- FASE 4: CONCLUSÃO ---
+    // --- PHASE 4: CONCLUSION ---
     if (nivel5Phase === 4) {
         drawNextLevel("Case Closed", "THE PERFECT CRIME.", "MAIN MENU"); 
     }
 }
 
-// --- DESENHOS ---
+// --- DRAWING FUNCTIONS ---
 
 function drawNivel5Quiz() {
     let scene = n5_cenas[n5_currentSceneIndex];
@@ -211,16 +210,16 @@ function drawNivel5Transition() {
     textAlign(CENTER, CENTER);
     
     fill(0, 255, 0); textSize(40);
-    text("CENA CONCLUÍDA!", width/2, height/3);
+    text("SCENE COMPLETE!", width/2, height/3);
     
     fill(200); textSize(18);
-    text("A sua manipulação funcionou.", width/2, height/3 + 50);
+    text("Your manipulation worked.", width/2, height/3 + 50);
 
     fill(200, 0, 0); rectMode(CENTER);
     rect(width/2, height/2 + 50, 250, 60, 10);
     
     fill(255); textSize(22);
-    let btnText = (n5_currentSceneIndex < 4) ? "SEGUINTE >>" : "TERMINAR CASO >>";
+    let btnText = (n5_currentSceneIndex < 4) ? "NEXT >>" : "CLOSE CASE >>";
     text(btnText, width/2, height/2 + 50);
     pop();
 }
@@ -230,19 +229,19 @@ function drawNivel5Error() {
     background(50, 0, 0);
     textAlign(CENTER, CENTER);
     fill(255, 0, 0); textSize(40);
-    text("FALHA NA HISTÓRIA", width/2, height/3);
+    text("STORY FAILURE", width/2, height/3);
     
     fill(255); textSize(20);
-    text("A sua resposta levantou suspeitas.", width/2, height/3 + 50);
+    text("Your answer raised suspicions.", width/2, height/3 + 50);
 
     fill(255); rectMode(CENTER);
     rect(width/2, height/2 + 50, 250, 60, 10);
     fill(0); textSize(22);
-    text("TENTAR NOVAMENTE", width/2, height/2 + 50);
+    text("TRY AGAIN", width/2, height/2 + 50);
     pop();
 }
 
-// --- INTERAÇÃO ---
+// --- INTERACTION ---
 
 function checkNivel5Click() {
     if (nivel5Phase === 0) { setupNivel5(); return true; }
@@ -257,14 +256,14 @@ function checkNivel5Click() {
 
     if (nivel5Phase === 1) {
         
-        // 0. Pular Vídeo Intro
+        // 0. Skip Video Intro
         if (n5_subState === 0) {
             n5_subState = 1; 
             if(nivelVideo) stopAndCleanVideo();
             return true;
         }
 
-        // 1. Clicar no Quiz
+        // 1. Click Quiz
         if (n5_subState === 1) {
             let startY = height * 0.45;
             let gap = 70;
@@ -275,30 +274,27 @@ function checkNivel5Click() {
                     mouseY > btnY - 25 && mouseY < btnY + 25) {
                     
                     if (i === scene.correta) {
-                        // LÓGICA ESPECIAL CENA 2:
-                        // Se existir videoFeedback, vai para estado 2.
-                        // Se for null, vai direto para estado 3 (Tela de Passagem).
                         if (scene.videoFeedback) {
                             n5_subState = 2;
                         } else {
                             n5_subState = 3;
                         }
                     } else {
-                        n5_subState = 4; // Erro
+                        n5_subState = 4; // Error
                     }
                     return true;
                 }
             }
         }
 
-        // 2. Pular Vídeo Feedback
+        // 2. Skip Video Feedback
         if (n5_subState === 2) {
             n5_subState = 3; 
             if(nivelVideo) stopAndCleanVideo();
             return true;
         }
 
-        // 3. Clicar "Próxima Cena"
+        // 3. Click "Next Scene"
         if (n5_subState === 3) {
              if (mouseX > width/2 - 125 && mouseX < width/2 + 125 && 
                  mouseY > height/2 + 20 && mouseY < height/2 + 80) {
@@ -306,15 +302,15 @@ function checkNivel5Click() {
                  n5_currentSceneIndex++; 
                  
                  if (n5_currentSceneIndex >= n5_cenas.length) {
-                     nivel5Phase = 4; // Fim
+                     nivel5Phase = 4; // End
                  } else {
-                     n5_subState = 0; // Próxima Cena
+                     n5_subState = 0; // Next Scene
                  }
                  return true;
              }
         }
 
-        // 4. Clicar Erro
+        // 4. Click Error
         if (n5_subState === 4) {
              if (mouseX > width/2 - 125 && mouseX < width/2 + 125 && 
                  mouseY > height/2 + 20 && mouseY < height/2 + 80) {

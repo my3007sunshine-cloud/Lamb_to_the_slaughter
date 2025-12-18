@@ -1,33 +1,33 @@
 // =================================================================
-// SKETCH.JS - ARQUIVO PRINCIPAL
+// SKETCH.JS - MAIN FILE
 // =================================================================
 
-// Estados do Jogo
-let gameState = 0;      // 0: Menu | 1: Seleção de Níveis | 2: Nível 1 | 3: Nível 2 | 4: Nível 3 | 5: Nível 4 | 6: Nível 5
-let nivel1Phase = 0;    // 0: Intro | 1: Jogo | 2: Conclusão | 3: Falha | 4: Próximo Nível
+// Game States
+let gameState = 0;      // 0: Menu | 1: Level Select | 2: Level 1 | 3: Level 2 | 4: Level 3 | 5: Level 4 | 6: Level 5
+let nivel1Phase = 0;    // 0: Intro | 1: Game | 2: Conclusion | 3: Fail | 4: Next Level
 let nivel2Phase = 0;
 let nivel3Phase = 0;
 let nivel4Phase = 0;
 let nivel5Phase = 0;
 
-// Assets Globais
+// Global Assets
 let minhaFonte;
 let textureBackground;
 let inverseTexture;
 
-// Variável Global de Vídeo
+// Global Video Variable
 let nivelVideo;
 
-// Variáveis Globais de Interação
-let heldItem = null;        // Para o Nível 2
-let nivel3DragItem = null;  // Para o Nível 3 (NOVO)
+// Global Interaction Variables
+let heldItem = null;        // For Level 2
+let nivel3DragItem = null;  // For Level 3
 let currentErrorMessage = "Try Again"; 
 
-// Áudio
+// Audio
 let soundVolume = 0.5;
 let isDraggingVolume = false;
 
-// Controle de Vídeo
+// Video Control
 let isVideoPlaying = false;
 
 // Layout
@@ -35,19 +35,19 @@ const AF_CENTRO = 140;
 const SLIDER_LENGTH = 100;
 let BTN_VOLTAR;
 
-// Assets do Minigame Nível 1
+// Assets Level 1
 let backgroundMiniGame1;
 let imgWhiskey, imgSoda, imgIceBag, imgIceCube, imgcopo;
 
-// Assets do Minigame Nível 2
+// Assets Level 2
 let backgroundMiniGame2; 
 let imgPernil, imgFrango, imgVegetables, imgGelo;
 
-// Assets do Minigame Nível 3 (NOVO)
+// Assets Level 3
 let backgroundMiniGame3;
 let imgTacaAberta, imgTacaFechada;
 
-// NÍVEL 4: Arrays para armazenar as 15 imagens de sorriso e seus fundos
+// Level 4: Arrays for smiles
 let smileImages = []; 
 let smileBackgrounds = []; 
 
@@ -56,13 +56,13 @@ function setup() {
 
   BTN_VOLTAR = { x: width - 80, y: 50, w: 100, h: 40 };
   
-  // Carregamento de Imagens com tratamento de erro
+  // Image Loading with error handling
   try {
     textureBackground = loadImage('imagens/textura-de-papel-branco2.png');
     inverseTexture = loadImage('imagens/textura-de-papel-branco inverso.png');
     minhaFonte = loadFont('font/Pinkend.ttf');
 
-    // Nivel 1
+    // Level 1
     backgroundMiniGame1= loadImage('imagens/minijogo.png');
     imgWhiskey = loadImage('imagens/whiskey.png');
     imgSoda = loadImage('imagens/soda.png');
@@ -70,20 +70,19 @@ function setup() {
     imgIceCube = loadImage('imagens/gelo.png');
     imgcopo = loadImage('imagens/copo2.png');
 
-    // Nivel 2
+    // Level 2
     backgroundMiniGame2 = loadImage('imagens/freezer.png');
     imgPernil = loadImage('imagens/lamb.png');       
     imgFrango = loadImage('imagens/frango.png');
     imgVegetables = loadImage('imagens/vegetables.png');
     imgGelo = loadImage('imagens/gelo.png'); 
 
-    // Nivel 3 (NOVO)
+    // Level 3
     backgroundMiniGame3 = loadImage('imagens/miniGame3.png');
     imgTacaAberta = loadImage('imagens/taça aberta.png');
     imgTacaFechada = loadImage('imagens/taça fechada.png');
-    // imgPernil já foi carregado no nível 2, reutilizamos ele.
     
-    // NÍVEL 4: Carregamento dos 15 Sorrisos e Fundos
+    // Level 4: Load 15 Smiles
     for (let i = 1; i <= 15; i++) {
         let img = loadImage(`imagens/sorriso${i}.png`); 
         smileImages.push(img);
@@ -92,7 +91,7 @@ function setup() {
     }
     
   } catch (e) {
-    console.log("Erro ao carregar imagens:", e);
+    console.log("Error loading images:", e);
   }
 
   rectMode(CENTER);
@@ -102,6 +101,32 @@ function setup() {
 }
 
 function draw() {
+  if (windowWidth < 1200) {
+        background(0); // Black Background
+        
+        // Text Config
+        fill(255); 
+        noStroke();
+        textAlign(CENTER, CENTER);
+        
+        // Main Message
+        textSize(30);
+        textStyle(BOLD);
+        text("SCREEN TOO SMALL", width / 2, height / 2 - 40);
+        
+        // Instructions
+        textSize(20);
+        textStyle(NORMAL);
+        text("This game was designed for PC.", width / 2, height / 2 + 10);
+        text("Please maximize the window or use a larger monitor.", width / 2, height / 2 + 40);
+        
+        // Size Indicator
+        fill(150);
+        textSize(16);
+        text(`Current Width: ${windowWidth}px (Min: 1200px)`, width / 2, height / 2 + 90);
+        
+        return; // Stops the game loop
+    }
   background(255);
 
   if (textureBackground) {
@@ -120,23 +145,23 @@ function draw() {
     case 1:
       drawNiveis();
       break;
-    case 2: // Nível 1
+    case 2: // Level 1
       drawNivel1();
       drawBtnVoltar();
       break;
-    case 3: // Nível 2
+    case 3: // Level 2
       drawNivel2();
       drawBtnVoltar();
       break;
-    case 4: // Nível 3
+    case 4: // Level 3
       drawNivel3(); 
       drawBtnVoltar();
       break;
-    case 5: // Nível 4
+    case 5: // Level 4
       drawNivel4();
       drawBtnVoltar();
       break;
-    case 6: // Nível 5
+    case 6: // Level 5
       drawNivel5();
       drawBtnVoltar();
       break;
@@ -146,7 +171,7 @@ function draw() {
   }
 }
 
-// --- CONTROLES E INPUTS ---
+// --- CONTROLS AND INPUTS ---
 
 function mousePressed() {
   if (isVideoPlaying) {
@@ -154,7 +179,7 @@ function mousePressed() {
     return;
   }
 
-  // Verifica clique no botão voltar (apenas se estiver dentro de um nível)
+  // Check Back Button
   if (gameState >= 2 && isMouseOverVoltar()) {
     goBackToMap();
     return;
@@ -174,7 +199,7 @@ function mousePressed() {
       checkNivel2Click();
       break;
     case 4:
-      checkNivel3Click(); // Nível 3
+      checkNivel3Click(); 
       break;
     case 5:
       checkNivel4Click(); 
@@ -186,12 +211,12 @@ function mousePressed() {
 }
 
 function mouseDragged() {
-  // Volume no Menu
+  // Menu Volume
   if (gameState === 1 && isDraggingVolume) {
     updateVolume();
   }
 
-  // --- LÓGICA DE ARRASTAR DO NÍVEL 2 ---
+  // --- LEVEL 2 DRAG ---
   if (gameState === 3) {
       if (heldItem) {
           if (typeof freezerItems !== 'undefined' && Array.isArray(freezerItems)) {
@@ -204,9 +229,8 @@ function mouseDragged() {
       }
   }
 
-  // --- LÓGICA DE ARRASTAR DO NÍVEL 3 (NOVO) ---
+  // --- LEVEL 3 DRAG ---
   if (gameState === 4 && nivel3DragItem) {
-      // Atualiza a posição do objeto que está sendo arrastado (l3_pernil)
       nivel3DragItem.x = mouseX;
       nivel3DragItem.y = mouseY;
   }
@@ -215,12 +239,12 @@ function mouseDragged() {
 function mouseReleased() {
   isDraggingVolume = false;
   
-  // Soltar item no Nível 2
+  // Level 2 Drop
   if (gameState === 3) {
       heldItem = null;
   }
 
-  // --- SOLTAR ITEM NO NÍVEL 3 (NOVO) ---
+  // Level 3 Drop
   if (gameState === 4 && typeof handleNivel3Drop === 'function') {
       handleNivel3Drop();
   }
@@ -234,7 +258,7 @@ function windowResized() {
     nivelVideo.size(width, height);
   }
   
-  // Reinicia posições se necessário
+  // Reset positions if needed
   if (gameState === 2) setupNivel1();
   if (gameState === 3) setupNivel2();
   if (gameState === 4) setupNivel3();
@@ -242,7 +266,7 @@ function windowResized() {
   if (gameState === 6) setupNivel5();
 }
 
-// --- FUNÇÕES AUXILIARES ---
+// --- HELPER FUNCTIONS ---
 
 function isMouseOverVoltar() {
   return (mouseX > BTN_VOLTAR.x - BTN_VOLTAR.w / 2 &&
@@ -270,18 +294,18 @@ function goBackToMap() {
     stopAndCleanVideo();
   }
   gameState = 1;
-  // Reseta fases ao sair
+  // Reset phases
   nivel1Phase = 0; 
   nivel2Phase = 0;
   nivel3Phase = 0;
   nivel4Phase = 0;
   nivel5Phase = 0;
   heldItem = null;
-  nivel3DragItem = null; // Reseta arraste do nível 3
+  nivel3DragItem = null; 
 }
 
 function handleVideoSkip() {
-  // --- NÍVEL 1 (GameState 2) ---
+  // --- LEVEL 1 (GameState 2) ---
   if (gameState === 2) {
     if (nivel1Phase === 0) {
       forceSkipVideo(() => { setupNivel1(); nivel1Phase = 1; }); 
@@ -290,7 +314,7 @@ function handleVideoSkip() {
     }
   }
 
-  // --- NÍVEL 2 (GameState 3) ---
+  // --- LEVEL 2 (GameState 3) ---
   else if (gameState === 3) {
     if (nivel2Phase === 0) {
       forceSkipVideo(() => { setupNivel2(); nivel2Phase = 1; });
@@ -300,55 +324,48 @@ function handleVideoSkip() {
     }
   }
   
-  // --- NÍVEL 3 (GameState 4) [ADICIONADO] ---
+  // --- LEVEL 3 (GameState 4) ---
   else if (gameState === 4) {
     if (nivel3Phase === 0) {
-        // Pular Vídeo do Crime -> Inicia Jogo da Cozinha
         forceSkipVideo(() => { setupNivel3(); nivel3Phase = 1; });
     }
     else if (nivel3Phase === 2) {
-        // Pular Vídeo do Espelho -> Vai para Tela Final
         forceSkipVideo(() => { nivel3Phase = 4; });
     }
   }
 
-  // --- NÍVEL 4 (GameState 5) [ADICIONADO] ---
-  else if (gameState === 5) {
-    if (nivel4Phase === 0) {
-        // Pular Intro Sorriso -> Inicia Jogo
-        forceSkipVideo(() => { setupNivel4(); nivel4Phase = 1; });
-    }
-    else if (nivel4Phase === 2) {
-        // Pular Conclusão -> Vai para Tela Final
-        forceSkipVideo(() => { nivel4Phase = 4; });
+// --- LEVEL 4 (GameState 5) ---
+else if (gameState === 5) {
+    // Fase 2 é o vídeo. Se clicar, salta para a Fase 4 (Next Level)
+    if (nivel4Phase === 2) {
+        forceSkipVideo(() => { 
+            nivel4Phase = 4; 
+        });
     }
   }
 
-  // --- NÍVEL 5 (GameState 6) ---
+  // --- LEVEL 5 (GameState 6) ---
   else if (gameState === 6) {
-      // Pular Intro Geral do Nível 5
       if (nivel5Phase === 0) {
           forceSkipVideo(() => { 
               setupNivel5(); 
               nivel5Phase = 1; 
           });
       }
-      // Pular Intro de cada CENA (dentro do jogo)
-      // Nota: Verifica se n5_subState é 0 (Video Intro) ou 2 (Video Feedback)
       else if (nivel5Phase === 1) {
           if (n5_subState === 0) {
-             forceSkipVideo(() => { n5_subState = 1; }); // Vai para o Quiz
+             forceSkipVideo(() => { n5_subState = 1; }); 
           } 
           else if (n5_subState === 2) {
-             forceSkipVideo(() => { n5_subState = 3; }); // Vai para a Transição
+             forceSkipVideo(() => { n5_subState = 3; }); 
           }
       }
   }
 }
 
-// Placeholders Genéricos
+// Placeholders
 function drawLevelVideo() {
-    // Implementação do seu vídeo player aqui
+    // Video player implementation
 }
 function forceSkipVideo(callback) {
     if(callback) callback();
@@ -360,7 +377,6 @@ function drawVideoPlaceholder(titulo) {
     text(titulo, width/2, height/2 - 50);
     textSize(20); fill(150);
     text("(Video Missing)", width/2, height/2);
-    // Botão Continuar Simulado
     fill(200, 0, 0); rect(width/2, height/2 + 100, 200, 60, 10);
     fill(255); textSize(25); text("CONTINUE >>", width/2, height/2 + 100);
 }

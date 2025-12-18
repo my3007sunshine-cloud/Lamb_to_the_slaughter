@@ -1,5 +1,5 @@
 // =================================================================
-// NIVEL 2 - LOGIC (ARCA CONGELADORA)
+// NIVEL 2 - LOGIC (FREEZER)
 // =================================================================
 
 let isFreezerGameInitialized = false;
@@ -7,7 +7,7 @@ let freezerItems = [];
 let targetItem = {};   
 let targetFound = false;
 
-// Variáveis para o Timer
+// Timer Variables
 let gameTimer = 20; 
 let timerStartTime; 
 let timeLeft; 
@@ -96,22 +96,22 @@ function checkLambRevealed() {
 }
 
 function drawNivel2() {
-    // --- FASE 0: INTRO ---
+    // --- PHASE 0: INTRO ---
     if (nivel2Phase === 0) { 
         if (!isVideoPlaying) {
             startLevelVideo('imagens/Nivel2_parte1.mp4', 2);
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    setupNivel2();   // CORREÇÃO: Chama o setup do Nivel 2
-                    nivel2Phase = 1; // CORREÇÃO: Atualiza a fase do Nivel 2
+                    setupNivel2();
+                    nivel2Phase = 1; 
                 });
             }
         }
         return;
     }
 
-    // --- FASE 1: JOGO ---
+    // --- PHASE 1: GAME ---
     if (nivel2Phase === 1) {
         if (!isFreezerGameInitialized) setupNivel2();
 
@@ -157,7 +157,7 @@ function drawNivel2() {
         let status = targetFound ? 1 : 0;
         let yFimCaixa = drawObjectiveBox("FIND AND CLICK THE REVEALED LAMB", status, 1);
         
-        drawIngredientsList(["Move objetcts"], yFimCaixa);
+        drawIngredientsList(["Move objects"], yFimCaixa);
 
         push();
         textAlign(LEFT);
@@ -170,30 +170,28 @@ function drawNivel2() {
         pop();
     }
 
-    // --- FASE 2: CONCLUSÃO ---
+    // --- PHASE 2: CONCLUSION ---
    if (nivel2Phase === 2) {
-        // Se o vídeo não estiver tocando, inicia o vídeo da Parte 2
         if (!isVideoPlaying) {
-            // Certifique-se de que o arquivo de vídeo está na pasta correta, ex: 'imagens/'
             startLevelVideo('imagens/Nivel2_parte2.mp4', 2); 
             
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    gameState = 3;  // Define o estado global como "fim de jogo" ou transição
-                    nivel2Phase = 4; // Vai para o menu de "Next Level"
+                    gameState = 3;  
+                    nivel2Phase = 4; 
                 });
             }
         }
         return;
     }
 
-    // --- FASE 3: RETRY ---
+    // --- PHASE 3: RETRY ---
     if (nivel2Phase === 3) {
         drawRetryScreen(currentErrorMessage);
     }
 
-    // --- FASE 4: NEXT LEVEL ---
+    // --- PHASE 4: NEXT LEVEL ---
     if (nivel2Phase === 4) {
         drawNextLevel("The Incident", "WEAPON ACQUIRED.", "DESTROY EVIDENCE");
     }
@@ -207,9 +205,8 @@ function checkNivel2Click() {
         }
         return false;
     }
-    // Phase 2: Fim
+    // Phase 2: End
     if (nivel2Phase === 2) {
-        // Se o jogador clicar durante o vídeo, para o vídeo e avança
         if (isVideoPlaying) {
             stopAndCleanVideo();
             gameState = 3; 
@@ -219,27 +216,27 @@ function checkNivel2Click() {
         return false;
     }
     
-    // --- FASE 4: NEXT LEVEL ---
+    // --- PHASE 4: NEXT LEVEL ---
     if (nivel2Phase === 4) {
         const iconY = height - 60;
         const homeX = width / 2 - 100;
         const retryX = width / 2 + 100;
 
-        // Menu (Case Files)
+        // Menu
         if (dist(mouseX, mouseY, homeX, iconY) < 40) { 
             gameState = 1; 
             nivel2Phase = 0; 
             return true; 
         }
         
-        // Replay (Nível 2)
+        // Replay
         if (dist(mouseX, mouseY, retryX, iconY) < 40) { 
             setupNivel2(); 
             nivel2Phase = 1; 
             return true; 
         }
         
-        // Next Level (Nível 3)
+        // Next Level (Level 3)
         const btnX = width / 2; 
         const btnY = height / 2 + 50;
         if (dist(mouseX, mouseY, btnX, btnY) < 50) {
@@ -257,9 +254,9 @@ function checkNivel2Click() {
         return false;
     }
 
-    // JOGO (FASE 1)
+    // GAME (PHASE 1)
     if (nivel2Phase === 1) {
-        // Tentar clicar no alvo
+        // Target Click
         if (targetItem.isRevealed &&
             mouseX > targetItem.x && mouseX < targetItem.x + targetItem.w &&
             mouseY > targetItem.y && mouseY < targetItem.y + targetItem.h) {
@@ -269,7 +266,7 @@ function checkNivel2Click() {
             return true;
         }
 
-        // Pegar Itens
+        // Grab Items
         for (let i = freezerItems.length - 1; i >= 0; i--) {
             let item = freezerItems[i];
             if (mouseX > item.x && mouseX < item.x + item.w &&

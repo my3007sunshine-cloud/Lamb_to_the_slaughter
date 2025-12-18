@@ -1,26 +1,22 @@
 // videoControl.js
 
 function startLevelVideo(videoPath, finalGameState) {
-    // 1. Limpa vídeo anterior se existir
+    // 1. Cleans previous video
     if (nivelVideo) {
         nivelVideo.remove();
         nivelVideo = null;
     }
 
-    console.log("Carregando vídeo: " + videoPath);
+    console.log("Loading video: " + videoPath);
 
-    // 2. Cria o vídeo
+    // 2. Creates video
     nivelVideo = createVideo(videoPath, () => {
-        console.log("Vídeo carregado.");
+        console.log("Video loaded.");
 
         // --- Volume ---
         let volumeParaAplicar = (typeof soundVolume !== 'undefined') ? soundVolume : 1.0;
         nivelVideo.volume(volumeParaAplicar);
-        console.log("Volume definido para: " + volumeParaAplicar);
         
-        // --- CORREÇÃO AQUI ---
-        // Em vez de nivelVideo.loop(false), usamos a propriedade do elemento DOM
-        // ou simplesmente não chamamos .loop(), pois o .play() toca apenas uma vez por defeito.
         if (nivelVideo.elt) {
             nivelVideo.elt.loop = false; 
         }
@@ -30,7 +26,7 @@ function startLevelVideo(videoPath, finalGameState) {
 
     nivelVideo.hide(); 
 
-    // Define o comportamento padrão de fim (será sobrescrito no nivel1.js, o que é correto)
+    // Default end behavior
     nivelVideo.onended(() => {
         stopAndCleanVideo();
         gameState = finalGameState;
@@ -67,7 +63,7 @@ function drawSkipButton() {
     fill(255);
     textSize(18);
     textAlign(CENTER, CENTER);
-    text("PULAR", x, y);
+    text("SKIP", x, y);
 }
 
 function forceSkipVideo(callbackAction) {
