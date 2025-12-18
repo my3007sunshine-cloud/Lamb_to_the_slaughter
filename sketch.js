@@ -302,6 +302,28 @@ function handleVideoSkip() {
     }
   }
   
+  if (gameState === 6) {
+      
+      // Se estiver a pular a Intro
+      if (nivel5Phase === 0) {
+          forceSkipVideo(() => { 
+              setupNivel5(); 
+              nivel5Phase = 1; 
+          });
+      }
+      // Se estiver a pular um Vídeo de Cena (durante o jogo)
+      else if (nivel5Phase === 1 && n5_subState === 0) {
+          forceSkipVideo(() => { 
+              n5_subState = 1; // Pula direto para o Quiz
+          });
+      }
+      // Se estiver a pular o Vídeo Final
+      else if (nivel5Phase === 2) {
+          forceSkipVideo(() => { 
+              nivel5Phase = 4; // Vai para a tela final
+          });
+      }
+  }
   // (Futuramente podes adicionar aqui os blocos para gameState 4, 5, etc.)
 }
 
