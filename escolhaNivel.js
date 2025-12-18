@@ -1,92 +1,153 @@
+// =================================================================
+// TELA DE ESCOLHA DE NÍVEIS - ESTILO NOIR TIMELINE
+// =================================================================
+
 function drawNiveis() {
-    fill(0);
+    // 1. Fundo Escuro
+    background(15); 
+
+    // Título (Estilo Datilografado)
     textAlign(CENTER, CENTER);
-
-    // Título NÍVEIS
-    fill(255, 0, 0);
-    textSize(70);
-    text("LEVEL", width / 2, height * 0.15);
-
-    // --- Desenho dos 5 Botões de Nível ---
-    const x_start = width / 2;
-    const y_start = height / 2 - 80;
-    const w_btn = 160;
-    const h_btn = 90;
+    fill(255); 
+    textSize(60);
+    textStyle(BOLD);
+    text("THE TIMELINE", width / 2, height * 0.12);
     
-    // Espaçamento
-    const x_gap = 190;
-    const y_gap = 180;
+    // Subtítulo
+    textSize(20);
+    textStyle(ITALIC);
+    fill(150);
+    text("- The events of this evening -", width / 2, height * 0.18);
+    textStyle(NORMAL); // Reset
 
-    // Configuração para 5 Níveis (3 em cima, 2 em baixo centrados)
+    // --- POSIÇÕES DOS NÍVEIS ---
+    // Mantive as posições originais para o fluxo funcionar bem
     const niveisPos = [
-        // Linha 1: 3 botões
-        {x: x_start - x_gap, y: y_start, state: 2}, // Nível 1
-        {x: x_start, y: y_start, state: 3},         // Nível 2
-        {x: x_start + x_gap, y: y_start, state: 4}, // Nível 3
-        
-        // Linha 2: 2 botões (centrados)
-        {x: x_start - (x_gap / 2), y: y_start + y_gap, state: 5}, // Nível 4
-        {x: x_start + (x_gap / 2), y: y_start + y_gap, state: 6}  // Nível 5
+        { id: 1, x: width * 0.20, y: height * 0.50, state: 2, label: "DRINKS" }, 
+        { id: 2, x: width * 0.35, y: height * 0.35, state: 3, label: "FREEZER" }, 
+        { id: 3, x: width * 0.50, y: height * 0.50, state: 4, label: "OVEN" }, 
+        { id: 4, x: width * 0.65, y: height * 0.65, state: 5, label: "SMILE" }, 
+        { id: 5, x: width * 0.80, y: height * 0.50, state: 6, label: "POLICE" }  
     ];
 
-    stroke(0);
-    strokeWeight(0.8);
-    textSize(60);
+    // --- 2. A LINHA VERMELHA (O Fio da Meada) ---
+    // Linha simples e direta conectando os passos
+    stroke(200, 0, 0); 
+    strokeWeight(3);
+    noFill();
+    
+    beginShape();
+    for (let p of niveisPos) {
+        vertex(p.x, p.y);
+    }
+    endShape();
+
+    // --- 3. OS CARTÕES (Polaroids Noir) ---
+    rectMode(CENTER);
 
     for (let i = 0; i < niveisPos.length; i++) {
         const p = niveisPos[i];
+        
+        // Verifica hover
+        let isHover = dist(mouseX, mouseY, p.x, p.y) < 60;
+        
+        // Configuração Visual
+        let cardW = isHover ? 130 : 110;
+        let cardH = isHover ? 150 : 130;
+        
+        push();
+        translate(p.x, p.y);
+        
+        // Efeito de Hover: Rotação suave para endireitar
+        // Se não houver hover, fica ligeiramente torto (estilo natural)
+        let rot = isHover ? 0 : (i % 2 === 0 ? 0.05 : -0.05);
+        rotate(rot);
+
+        // A MOLDURA (Polaroid)
+        if (isHover) {
+            stroke(200, 0, 0); // Borda Vermelha se selecionado
+            strokeWeight(4);
+            fill(255);         // Branco puro
+        } else {
+            noStroke();
+            fill(220);         // Branco sujo se inativo
+        }
+        
+        // Desenha a moldura da foto
+        rect(0, 0, cardW, cardH, 2);
+
+        // A "FOTO" (Retângulo Preto)
+        fill(10); 
+        noStroke();
+        rect(0, -15, cardW * 0.85, cardH * 0.60);
+
+        // Número do Nível (Branco sobre o fundo preto)
         fill(255);
-        rect(p.x, p.y, w_btn, h_btn);
-        fill(0);
-        text(`[ ${i + 1} ]`, p.x, p.y);
+        textSize(isHover ? 40 : 30);
+        textStyle(BOLD);
+        text(p.id, 0, -15);
+
+        // Texto/Etiqueta em baixo
+        fill(0); // Texto preto na parte branca da polaroid
+        textSize(14);
+        textStyle(BOLD);
+        text(p.label, 0, cardH/2 - 15);
+        
+        // Pionese/Alfinete (Vermelho)
+        fill(200, 0, 0);
+        noStroke();
+        ellipse(0, -cardH/2 + 8, 8, 8);
+        
+        pop();
     }
 
-    // --- Desenho do Controle de Som (Slider) ---
-    const soundX_Center = width / 2 + AF_CENTRO;
-    const soundY = height-40;
-
-    fill(0);
-    textSize(24);
-    text("SOUND", soundX_Center, soundY - 40);
-    text("CONTROLS", width / 2 - AF_CENTRO, soundY - 40);
-
-    textSize(16);
-    text("MOUSE", width / 2 - AF_CENTRO, soundY - 15);
-
-    // Slider Volume
-    stroke(255, 0, 0);
-    strokeWeight(2);
-    line(soundX_Center - SLIDER_LENGTH / 2, soundY, soundX_Center + SLIDER_LENGTH / 2, soundY);
-
-    const volumeCircleX = map(soundVolume, 0, 1, soundX_Center - SLIDER_LENGTH / 2, soundX_Center + SLIDER_LENGTH / 2);
-
-    fill(255, 0, 0);
-    noStroke();
-    ellipse(volumeCircleX, soundY, 12, 12);
+    drawSoundControls();
 }
 
-function checkNiveisClick() {
-    const x_start = width / 2;
-    const y_start = height / 2 - 80;
-    const w_btn = 160;
-    const h_btn = 100;
-    const x_gap = 190;
-    const y_gap = 140; // Usei o mesmo valor lógico do draw, ajustado ligeiramente se necessário
+function drawSoundControls() {
+    const soundX_Center = width / 2;
+    const soundY = height - 50;
+    
+    textAlign(CENTER, CENTER);
+    fill(255); // Branco para contrastar com o fundo preto
+    noStroke();
+    textSize(16);
+    textStyle(BOLD);
+    text("AUDIO LEVEL", soundX_Center, soundY - 25);
 
-    // Mesma lógica de posições do draw
-    const niveisMap = [
-        {x: x_start - x_gap, y: y_start, state: 2},
-        {x: x_start, y: y_start, state: 3},
-        {x: x_start + x_gap, y: y_start, state: 4},
-        {x: x_start - (x_gap / 2), y: y_start + 180, state: 5}, // Usei 180 fixo para igualar o draw
-        {x: x_start + (x_gap / 2), y: y_start + 180, state: 6}
+    // Slider (Linha Branca)
+    stroke(255);
+    strokeWeight(2);
+    const sliderWidth = 200;
+    line(soundX_Center - sliderWidth/2, soundY, soundX_Center + sliderWidth/2, soundY);
+
+    // Marcador (Retângulo Vermelho)
+    const volumeX = map(soundVolume, 0, 1, soundX_Center - sliderWidth/2, soundX_Center + sliderWidth/2);
+    
+    fill(200, 0, 0);
+    noStroke();
+    rectMode(CENTER);
+    rect(volumeX, soundY, 12, 24); 
+}
+
+// --- FUNÇÕES DE CLIQUE (MANTIDAS IGUAIS PARA FUNCIONAR) ---
+
+function checkNiveisClick() {
+    const niveisPos = [
+        { id: 1, x: width * 0.20, y: height * 0.50, state: 2 },
+        { id: 2, x: width * 0.35, y: height * 0.35, state: 3 },
+        { id: 3, x: width * 0.50, y: height * 0.50, state: 4 },
+        { id: 4, x: width * 0.65, y: height * 0.65, state: 5 },
+        { id: 5, x: width * 0.80, y: height * 0.50, state: 6 }
     ];
 
-    for (let i = 0; i < niveisMap.length; i++) {
-        const btn = niveisMap[i];
-        if (mouseX > btn.x - w_btn/2 && mouseX < btn.x + w_btn/2 &&
-            mouseY > btn.y - h_btn/2 && mouseY < btn.y + h_btn/2) {
-            gameState = btn.state;
+    const wClick = 130; // Ajustado para o novo tamanho
+    const hClick = 150;
+
+    for (let p of niveisPos) {
+        if (mouseX > p.x - wClick/2 && mouseX < p.x + wClick/2 &&
+            mouseY > p.y - hClick/2 && mouseY < p.y + hClick/2) {
+            gameState = p.state;
             return true;
         }
     }
@@ -94,36 +155,21 @@ function checkNiveisClick() {
 }
 
 function checkVolumeClick() {
-    const soundX_Center = width / 2 + AF_CENTRO;
-    const soundY = height - 100; // Ajustado para corresponder à área visual se necessário, ou manter height-40
-    // Nota: No código original estava height-100 para o click e height-40 para o desenho. 
-    // Vou ajustar para a área do slider (height-40)
+    const soundX_Center = width / 2;
+    const soundY = height - 50;
+    const sliderWidth = 200;
     
-    const clickY = height - 40;
-    const clickTolerance = 25;
-
-    const soundAreaMinX = soundX_Center - SLIDER_LENGTH / 2 - clickTolerance;
-    const soundAreaMaxX = soundX_Center + SLIDER_LENGTH / 2 + clickTolerance;
-    const soundAreaMinY = clickY - clickTolerance;
-    const soundAreaMaxY = clickY + clickTolerance;
-
-    if (mouseX >= soundAreaMinX && mouseX <= soundAreaMaxX &&
-        mouseY >= soundAreaMinY && mouseY <= soundAreaMaxY) {
+    if (mouseX > soundX_Center - sliderWidth/2 - 20 && 
+        mouseX < soundX_Center + sliderWidth/2 + 20 &&
+        mouseY > soundY - 20 && mouseY < soundY + 20) {
         isDraggingVolume = true;
         updateVolume();
     }
 }
 
 function updateVolume() {
-    const soundX_Center = width / 2 + AF_CENTRO; // Certifica-te que AF_CENTRO está definido
-    const soundAreaMinX = soundX_Center - SLIDER_LENGTH / 2;
-    const soundAreaMaxX = soundX_Center + SLIDER_LENGTH / 2;
-
-    // Calcula o volume baseado na posição do rato (de 0 a 1)
-    soundVolume = map(mouseX, soundAreaMinX, soundAreaMaxX, 0, 1);
-    
-    // Impede que o volume passe de 1 ou seja menor que 0
+    const soundX_Center = width / 2;
+    const sliderWidth = 200;
+    soundVolume = map(mouseX, soundX_Center - sliderWidth/2, soundX_Center + sliderWidth/2, 0, 1);
     soundVolume = constrain(soundVolume, 0, 1);
-    
- 
 }

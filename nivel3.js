@@ -1,121 +1,215 @@
 // =================================================================
-// NIVEL 3 - LOGIC (Placeholder)
+// NIVEL 3 - THE OVEN (A Cozinha)
 // =================================================================
 
-let isNivel3GameInitialized = false;
-let nivel3TargetFound = false;
+// Estados internos do Nível 3
+let l3_step = 0; // 0: Arrastar Carne para Taça | 1: Arrastar Taça para Forno
+let l3_pernil = { x: 0, y: 0, w: 120, h: 200, visible: true };
+
+// Adicionei originalX/Y para a taça voltar ao lugar se o jogador soltar no sítio errado
+let l3_taca = { x: 0, y: 0, originalX: 0, originalY: 0, w: 250, h: 200 }; 
+
+let ovenHitbox = { x: 0, y: 0, w: 320, h: 350 };
 
 function setupNivel3() {
-    console.log("Setup Nivel 3 - Placeholder");
-    // Lógica de inicialização do minijogo do Nível 3 (Placeholder)
-    isNivel3GameInitialized = true;
-    nivel3TargetFound = false;
+    console.log("Iniciando Nivel 3 - Drag Pot Logic");
+    l3_step = 0; 
+    
+    // --- POSICIONAMENTO ---
+    
+    // 1. Pernil (Inventário à esquerda)
+    l3_pernil.x = width * 0.15;
+    l3_pernil.y = height - 150;
+    l3_pernil.visible = true;
 
-    // Se estiver na fase 0 (Intro), passamos para 1 (Jogo)
-    if (nivel3Phase === 0) nivel3Phase = 1;
+    // 2. Taça (No balcão - Esquerda)
+    l3_taca.x = width * 0.30; 
+    l3_taca.y = height * 0.65;
+    // Guardamos a posição original para o "snap back"
+    l3_taca.originalX = l3_taca.x;
+    l3_taca.originalY = l3_taca.y;
+
+    // 3. Forno (À direita)
+    ovenHitbox.x = width * 0.78; 
+    ovenHitbox.y = height * 0.55;
+    
+    if (nivel3Phase === 0) nivel3Phase = 1; 
 }
 
 function drawNivel3() {
 
-    // --- FASE 0: INTRO ---
+    // --- FASE 0: INTRODUÇÃO ---
     if (nivel3Phase === 0) {
-        if (typeof drawVideoPlaceholder === 'function') drawVideoPlaceholder("LEVEL 3: THE FREEZER");
-        else { setupNivel3(); nivel3Phase = 1; }
+        drawVideoPlaceholder("LEVEL 3: DINNER TIME");
         return;
     }
 
-    // --- FASE 1: JOGO ---
+    // --- FASE 1: GAMEPLAY ---
     if (nivel3Phase === 1) {
-        if (!isNivel3GameInitialized) setupNivel3();
+        
+        // 1. Fundo
+        if (backgroundMiniGame3) {
+            image(backgroundMiniGame3, 0, 0, width, height);
+        } else {
+            background(20); 
+        }
 
-        // 1. Fundo Geral (Placeholder)
-        if (backgroundMiniGame2) image(backgroundMiniGame2, 0, 0, width, height); 
-        else background(200); 
+        // 2. Objetos Interativos
+        imageMode(CENTER);
 
-        // 2. Placeholder Visual do Jogo
-        push();
-        fill(0, 0, 0, 180);
-        rectMode(CENTER);
-        rect(width / 2, height / 2, width * 0.7, height * 0.7);
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(40);
-        text("MINIJOGO NÍVEL 3 (EM BREVE)", width / 2, height / 2);
-        textSize(20);
-        text("Clique para simular a conclusão.", width / 2, height / 2 + 50);
-        pop();
-
-        // 3. UI (Placeholder de Objetivo)
-        drawObjectiveBox("PLACEHOLDER: CONCLUIR O NÍVEL 3", nivel3TargetFound ? 1 : 0, 1);
+        // -- PASSO 0: Preparação (Carne -> Taça) --
+        if (l3_step === 0) {
+            // Desenha a taça parada no lugar original
+            if (imgTacaAberta) image(imgTacaAberta, l3_taca.x, l3_taca.y, l3_taca.w, l3_taca.h);
+            
+            // Desenha o pernil
+            if (l3_pernil.visible && imgPernil) {
+                image(imgPernil, l3_pernil.x, l3_pernil.y, l3_pernil.w, l3_pernil.h);
+            }
+            
+            drawObjectiveBox("PLACE MEAT IN POT", 0, 2);
+        } 
+        
+        // -- PASSO 1: Cozinhar (Taça -> Forno) --
+        else if (l3_step === 1) {
+            // Desenha a taça FECHADA (que agora pode se mover)
+            if (imgTacaFechada) image(imgTacaFechada, l3_taca.x, l3_taca.y, l3_taca.w, l3_taca.h);
+            
+            drawObjectiveBox("DRAG POT TO OVEN", 1, 2);
+            
+            // (Opcional) Destaque visual no forno para indicar o alvo
+            /*
+            noFill(); stroke(255, 0, 0, 100); strokeWeight(2);
+            rect(ovenHitbox.x, ovenHitbox.y, ovenHitbox.w, ovenHitbox.h);
+            */
+        }
+        imageMode(CORNER);
     }
 
-    // --- FASE 2: CONCLUSÃO ---
+    // --- FASE 2: CONCLUSÃO (Vídeo) ---
     if (nivel3Phase === 2) {
-        if (typeof drawVideoPlaceholder === 'function') drawVideoPlaceholder("NÍVEL 3 CONCLUÍDO!");
-        else { gameState = 4; nivel3Phase = 4; }
+        drawVideoPlaceholder("COOKING COMPLETE...");
         return;
     }
 
-    // --- FASE 3: RETRY ---
+    // --- FASE 3: DERROTA ---
     if (nivel3Phase === 3) {
-        // Usa a variável global de erro do sketch.js
         drawRetryScreen(currentErrorMessage);
+        return;
     }
 
-    // --- FASE 4: NEXT LEVEL ---
+    // --- FASE 4: PRÓXIMO NÍVEL ---
     if (nivel3Phase === 4) {
         drawNextLevel();
     }
 }
 
 // =================================================================
-// INPUTS NIVEL 3
+// CONTROLES E LÓGICA
 // =================================================================
 
 function checkNivel3Click() {
-    // Fase 0 e 2: Intro/Conclusão (Usam o checkPlaceholderClick)
-    if (nivel3Phase === 0 || nivel3Phase === 2) {
-        if (typeof checkPlaceholderClick === 'function' && checkPlaceholderClick()) {
-            if (nivel3Phase === 0) { setupNivel3(); nivel3Phase = 1; }
-            else if (nivel3Phase === 2) { gameState = 5; nivel3Phase = 4; } // Próximo é o Nível 4 (gameState=5)
-            return true;
-        }
-        return false;
-    }
+    
+    // Telas de Intro/Outro/Retry
+    if (nivel3Phase === 0) { setupNivel3(); nivel3Phase = 1; return; }
+    if (nivel3Phase === 2) { gameState = 5; nivel3Phase = 4; return; } 
 
-    // Fase 4: Next Level Menu
-    if (nivel3Phase === 4) {
-        const iconY = height - 60;
-        // HOME
-        if (dist(mouseX, mouseY, 80, iconY) < 30) { gameState = 0; nivel3Phase = 0; return true; }
-        // RETRY
-        if (dist(mouseX, mouseY, 160, iconY) < 30) { setupNivel3(); nivel3Phase = 1; return true; }
-        // NEXT LEVEL (Botão Central)
-        const btnX = width / 2; const btnY = height / 2 + 50;
-        if (mouseX > btnX - 100 && mouseX < btnX + 100 && mouseY > btnY - 30 && mouseY < btnY + 30) {
-            gameState = 5; // Vai para Nível 4
-            return true;
-        }
-        return false;
-    }
-
-    // Phase 3: Retry
+    // Botão Retry (Game Over)
     if (nivel3Phase === 3) {
-        if (dist(mouseX, mouseY, width/2, height/2 + 200) < 100) { // Ajuste para a nova posição do botão
-            setupNivel3(); nivel3Phase = 1; return true; 
+        const btnX = width / 2;
+        const btnY = height / 2 + 120; // Coordenada do botão no addicionalScreen.js
+        if (mouseX > btnX - 120 && mouseX < btnX + 120 &&
+            mouseY > btnY - 25 && mouseY < btnY + 25) {
+            setupNivel3(); 
+            nivel3Phase = 1; 
         }
-        return false;
+        return;
     }
 
-    // JOGO (FASE 1)
+    // Tela Next Level
+    if (nivel3Phase === 4) {
+        if (dist(mouseX, mouseY, width/2, height/2 + 50) < 50) { gameState = 5; return; } // Next
+        if (dist(mouseX, mouseY, width/2 - 100, height - 60) < 30) { gameState = 1; nivel3Phase = 0; return; } // Menu
+        if (dist(mouseX, mouseY, width/2 + 100, height - 60) < 30) { setupNivel3(); nivel3Phase = 1; return; } // Redo
+        return;
+    }
+
+    // --- GAMEPLAY (FASE 1) ---
     if (nivel3Phase === 1) {
-        // Lógica de clique de jogo do Nível 3
         
-        // Clica em qualquer lugar para concluir (Placeholder)
-        if (mouseIsPressed) {
-            nivel3TargetFound = true;
-            nivel3Phase = 2; // Passa para a fase de conclusão
-            return true;
+        // PASSO 0: Arrastar Carne
+        if (l3_step === 0) {
+            // Se clicar no pernil -> Arrasta
+            if (dist(mouseX, mouseY, l3_pernil.x, l3_pernil.y) < l3_pernil.w) {
+                nivel3DragItem = l3_pernil; 
+            }
+        }
+        
+        // PASSO 1: Arrastar Taça
+        else if (l3_step === 1) {
+            // Se clicar na taça -> Arrasta
+            if (dist(mouseX, mouseY, l3_taca.x, l3_taca.y) < l3_taca.w/2) {
+                nivel3DragItem = l3_taca;
+            }
         }
     }
+}
+
+// Chamado automaticamente quando solta o mouse (pelo sketch.js)
+function handleNivel3Drop() {
+    
+    // --- SOLTAR A CARNE (Passo 0) ---
+    if (nivel3DragItem === l3_pernil) {
+        
+        // Se soltar na TAÇA (Sucesso)
+        if (dist(l3_pernil.x, l3_pernil.y, l3_taca.x, l3_taca.y) < 100) { 
+            l3_step = 1; // Avança para a fase da taça
+            l3_pernil.visible = false; 
+            nivel3DragItem = null;
+        } 
+        // Se soltar no FORNO (Derrota - Carne Crua)
+        else if (isMouseOverOven(l3_pernil.x, l3_pernil.y)) {
+            triggerNivel3Fail("RAW MEAT IS SUSPICIOUS.");
+            nivel3DragItem = null;
+        }
+        // Se soltar no nada (Volta pro lugar)
+        else {
+            l3_pernil.x = width * 0.15;
+            l3_pernil.y = height - 150;
+            nivel3DragItem = null;
+        }
+    }
+
+    // --- SOLTAR A TAÇA (Passo 1) ---
+    else if (nivel3DragItem === l3_taca) {
+        
+        // Se soltar no FORNO (Vitória)
+        if (isMouseOverOven(l3_taca.x, l3_taca.y)) {
+            nivel3Phase = 2; // Toca vídeo final
+            nivel3DragItem = null;
+        } 
+        // Se soltar fora (Volta para o balcão)
+        else {
+            l3_taca.x = l3_taca.originalX;
+            l3_taca.y = l3_taca.originalY;
+            nivel3DragItem = null;
+        }
+    }
+}
+
+// Verifica se as coordenadas (x,y) estão dentro do forno
+// Se não passar argumentos, usa o mouseX/Y
+function isMouseOverOven(targetX, targetY) {
+    let checkX = targetX || mouseX;
+    let checkY = targetY || mouseY;
+
+    return (checkX > ovenHitbox.x - ovenHitbox.w/2 && 
+            checkX < ovenHitbox.x + ovenHitbox.w/2 &&
+            checkY > ovenHitbox.y - ovenHitbox.h/2 && 
+            checkY < ovenHitbox.y + ovenHitbox.h/2);
+}
+
+function triggerNivel3Fail(msg) {
+    currentErrorMessage = msg;
+    nivel3Phase = 3; 
 }

@@ -14,7 +14,6 @@ function setupNivel5() {
 }
 
 function drawNivel5() {
-
     // --- FASE 0: INTRO ---
     if (nivel5Phase === 0) {
         if (typeof drawVideoPlaceholder === 'function') drawVideoPlaceholder("LEVEL 5: THE EVIDENCE");
@@ -29,7 +28,6 @@ function drawNivel5() {
         if (backgroundMiniGame2) image(backgroundMiniGame2, 0, 0, width, height); 
         else background(200); 
 
-        // Placeholder Visual do Jogo
         push();
         fill(0, 0, 0, 180);
         rectMode(CENTER);
@@ -59,23 +57,16 @@ function drawNivel5() {
 
     // --- FASE 4: NEXT LEVEL ---
     if (nivel5Phase === 4) {
-        // Usa o drawNextLevel padrão, mas o botão central deve levar ao Menu Principal (gameState=0)
         drawNextLevel();
     }
 }
 
-// =================================================================
-// INPUTS NIVEL 5
-// =================================================================
-
 function checkNivel5Click() {
-    // Fase 0 e 2: Intro/Conclusão (Usam o checkPlaceholderClick)
     if (nivel5Phase === 0 || nivel5Phase === 2) {
         if (typeof checkPlaceholderClick === 'function' && checkPlaceholderClick()) {
             if (nivel5Phase === 0) { setupNivel5(); nivel5Phase = 1; }
             else if (nivel5Phase === 2) { 
-                // Último nível - Transição para o Menu/Créditos
-                gameState = 0; // Vai para Menu Principal
+                gameState = 0; // Fim do Jogo
                 nivel5Phase = 0;
             }
             return true;
@@ -83,23 +74,36 @@ function checkNivel5Click() {
         return false;
     }
 
-    // Fase 4: Next Level Menu (Último Nível - Botão Central deve ser 'FIM' ou 'MENU')
+    // --- FASE 4: NEXT LEVEL ---
     if (nivel5Phase === 4) {
         const iconY = height - 60;
-        // HOME
-        if (dist(mouseX, mouseY, 80, iconY) < 30) { gameState = 0; nivel5Phase = 0; return true; }
-        // RETRY
-        if (dist(mouseX, mouseY, 160, iconY) < 30) { setupNivel5(); nivel5Phase = 1; return true; }
-        // NEXT LEVEL (Botão Central) -> Vai para o Menu Principal
-        const btnX = width / 2; const btnY = height / 2 + 50;
-        if (mouseX > btnX - 100 && mouseX < btnX + 100 && mouseY > btnY - 30 && mouseY < btnY + 30) {
-            gameState = 0; // Vai para Menu Principal
+        const homeX = width / 2 - 100;
+        const retryX = width / 2 + 100;
+        
+        // MENU
+        if (dist(mouseX, mouseY, homeX, iconY) < 40) { 
+            gameState = 1; 
+            nivel5Phase = 0; 
+            return true; 
+        }
+        
+        // REPLAY
+        if (dist(mouseX, mouseY, retryX, iconY) < 40) { 
+            setupNivel5(); 
+            nivel5Phase = 1; 
+            return true; 
+        }
+        
+        // FIM (Botão Central) -> Menu Principal
+        const btnX = width / 2; 
+        const btnY = height / 2 + 50;
+        if (dist(mouseX, mouseY, btnX, btnY) < 50) {
+            gameState = 0; 
             return true;
         }
         return false;
     }
 
-    // Phase 3: Retry
     if (nivel5Phase === 3) {
         if (dist(mouseX, mouseY, width/2, height/2 + 200) < 100) {
             setupNivel5(); nivel5Phase = 1; return true; 
@@ -107,12 +111,10 @@ function checkNivel5Click() {
         return false;
     }
 
-    // JOGO (FASE 1)
     if (nivel5Phase === 1) {
-        // Clica em qualquer lugar para concluir (Placeholder)
         if (mouseIsPressed) {
             nivel5TargetFound = true;
-            nivel5Phase = 2; // Passa para a fase de conclusão
+            nivel5Phase = 2; 
             return true;
         }
     }

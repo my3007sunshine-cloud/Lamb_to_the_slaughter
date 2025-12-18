@@ -1,17 +1,15 @@
 // =================================================================
-// NIVEL 4 - LOGIC (Matching Smile Minigame - Layout Carrossel)
+// NIVEL 4 - LOGIC (Matching Smile Minigame)
 // =================================================================
 
 let isNivel4GameInitialized = false;
 let nivel4TargetFound = false;
 
-// Configurações do Minigame de Sorrisos
 const NUM_SMILES = 15;
 let targetSmileIndex = -1;
-let currentDisplayIndex = 0; // Índice da imagem atualmente visível
+let currentDisplayIndex = 0; 
 let selectedSmileIndex = -1; 
 
-// Dimensões dos botões
 const ARROW_SIZE = 50;
 const CHOOSE_BUTTON_W = 180;
 const CHOOSE_BUTTON_H = 60;
@@ -21,13 +19,11 @@ function setupNivel4() {
     isNivel4GameInitialized = true;
     nivel4TargetFound = false;
     selectedSmileIndex = -1;
-    currentDisplayIndex = 0; // Começa sempre na primeira imagem
+    currentDisplayIndex = 0; 
 
-    // 1. Definir um alvo fixo (Sorriso 11 = índice 10)
     targetSmileIndex = 10; 
     console.log("Sorriso Alvo (ID):", targetSmileIndex);
 
-    // Transição para Jogo
     if (nivel4Phase === 0) nivel4Phase = 1;
 }
 
@@ -40,11 +36,10 @@ function drawNivel4() {
         return;
     }
 
-    // --- FASE 1: JOGO (Carrossel de Sorrisos) ---
+    // --- FASE 1: JOGO ---
     if (nivel4Phase === 1) {
         if (!isNivel4GameInitialized) setupNivel4();
 
-        // 0. Desenhar o Fundo Dinâmico
         let currentBG = smileBackgrounds[currentDisplayIndex];
         if (currentBG) {
             image(currentBG, 0, 0, width, height); 
@@ -54,11 +49,8 @@ function drawNivel4() {
             background(200); 
         }
         
-        // ----------------------------------------------------
-        // 1. DIMENSÕES AMPLIADAS
-        // ----------------------------------------------------
-        const displayW = width * 0.6;   // Aumentado de 0.5 para 0.6
-        const displayH = height * 0.7;  // Aumentado de 0.6 para 0.7
+        const displayW = width * 0.6;
+        const displayH = height * 0.7;
         const displayX = width / 2;
         const displayY = height / 2;
 
@@ -66,11 +58,9 @@ function drawNivel4() {
         rectMode(CENTER);
         imageMode(CENTER);
         
-        // --- RETÂNGULO (MOLDURA) AMPLIADO ---
         fill(255, 255, 255, 220);
         stroke(0);
         strokeWeight(4);
-        // Agora somamos 60 pixels para criar uma moldura mais larga e visível
         rect(displayX, displayY, displayW + 60, displayH + 60, 15);
         
         let img = smileImages[currentDisplayIndex];
@@ -84,11 +74,8 @@ function drawNivel4() {
         }
         pop();
         
-        // ----------------------------------------------------
-        // 2. Navegação (Setas ajustadas para a nova largura)
-        // ----------------------------------------------------
         const arrowY = displayY;
-        const arrowXOffset = (displayW / 2) + 80; // Afastadas para não sobrepor o retângulo
+        const arrowXOffset = (displayW / 2) + 80;
         
         if (currentDisplayIndex > 0) {
             drawArrow(displayX - arrowXOffset, arrowY, ARROW_SIZE, -1);
@@ -97,7 +84,6 @@ function drawNivel4() {
             drawArrow(displayX + arrowXOffset, arrowY, ARROW_SIZE, 1);
         }
         
-        // 3. Botão "Escolher"
         const btnX = displayX;
         const btnY = height - 80;
         
@@ -114,7 +100,7 @@ function drawNivel4() {
         drawObjectiveBox(`Escolha o Sorriso Certo (ID ${currentDisplayIndex + 1}/${NUM_SMILES})`, nivel4TargetFound ? 1 : 0, 1);
     }
 
-    // --- FASES DE CONCLUSÃO E RETRY ---
+    // --- CONCLUSÃO E RETRY ---
     if (nivel4Phase === 2) {
         if (typeof drawVideoPlaceholder === 'function') drawVideoPlaceholder("NÍVEL 4 CONCLUÍDO!");
         else { nivel4Phase = 4; } 
@@ -150,16 +136,35 @@ function checkNivel4Click() {
         }
         return false;
     }
+    
+    // --- FASE 4: NEXT LEVEL ---
     if (nivel4Phase === 4) {
         const iconY = height - 60;
-        if (dist(mouseX, mouseY, 80, iconY) < 30) { gameState = 0; nivel4Phase = 0; return true; }
-        if (dist(mouseX, mouseY, 160, iconY) < 30) { setupNivel4(); nivel4Phase = 1; return true; }
-        const btnX = width / 2; const btnY = height / 2 + 50;
-        if (mouseX > btnX - 100 && mouseX < btnX + 100 && mouseY > btnY - 30 && mouseY < btnY + 30) {
-            gameState = 6; return true;
+        const homeX = width / 2 - 100;
+        const retryX = width / 2 + 100;
+
+        // MENU
+        if (dist(mouseX, mouseY, homeX, iconY) < 40) { 
+            gameState = 1; 
+            nivel4Phase = 0; 
+            return true; 
+        }
+        // REPLAY
+        if (dist(mouseX, mouseY, retryX, iconY) < 40) { 
+            setupNivel4(); 
+            nivel4Phase = 1; 
+            return true; 
+        }
+        // NEXT LEVEL (Nível 5)
+        const btnX = width / 2; 
+        const btnY = height / 2 + 50;
+        if (dist(mouseX, mouseY, btnX, btnY) < 50) {
+            gameState = 6; 
+            return true;
         }
         return false;
     }
+
     if (nivel4Phase === 3) {
         const xButton = width / 2;
         const yButton = height / 2 + 200;

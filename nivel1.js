@@ -7,8 +7,6 @@ let ingredients = [];
 let selectedGlassIndex = -1;
 let isGameInitialized = false;
 
-// REMOVIDO: let currentErrorMessage... (Já está no sketch.js)
-
 function setupNivel1() {
     // 1. Definição dos Copos
     glasses = [
@@ -52,15 +50,12 @@ function drawNivel1() {
     // --- FASE 0: VÍDEO INTRO ---
     if (nivel1Phase === 0) {
         if (!isVideoPlaying) {
-            // Inicia o vídeo e define o que acontece quando acaba
             startLevelVideo('imagens/nivel1.mp4', 2);
-            
-            // Sobrescreve o comportamento padrão para mudar apenas a FASE, não o gameState
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    setupNivel1();   // Reseta/Prepara o jogo
-                    nivel1Phase = 1; // Vai para o Minigame
+                    setupNivel1();
+                    nivel1Phase = 1; 
                 });
             }
         }
@@ -71,18 +66,15 @@ function drawNivel1() {
     if (nivel1Phase === 1) {
         if (!isGameInitialized) setupNivel1();
 
-        // 1. Fundo
         if (backgroundMiniGame1) {
             image(backgroundMiniGame1, 0, 0, width, height);
         } else {
             background(200);
         }
 
-        // 2. Desenhos do Jogo
         drawIngredients();
         drawGlasses();
 
-        // 3. UI (Objetivos)
         let drinksProntos = glasses.filter(g => g.state === 3).length;
         let yFimCaixa = drawObjectiveBox("PREPARE DRINKS", drinksProntos, 2);
 
@@ -94,14 +86,11 @@ function drawNivel1() {
             "3. Add Soda"
         ], yFimCaixa);
 
-        // 4. Cursor
         if (heldItem) {
             drawHeldItemCursor();
         }
 
-        // 5. VERIFICAÇÃO DE VITÓRIA
         if (drinksProntos === 2) {
-            // Assim que ganhar, vai para a Fase 2 (Vídeo de Conclusão)
             nivel1Phase = 2; 
         }
     }
@@ -110,13 +99,11 @@ function drawNivel1() {
     if (nivel1Phase === 2) {
         if (!isVideoPlaying) {
             startLevelVideo('imagens/nivel1_end.mp4', 2);
-            
-            // Sobrescreve para garantir que vá para a tela "Level Next" (Fase 4)
             if (nivelVideo) {
                 nivelVideo.onended(() => {
                     stopAndCleanVideo();
-                    gameState = 2;   // Mantém no Nível 1 por enquanto
-                    nivel1Phase = 4; // Mostra a tela de "Nível Seguinte"
+                    gameState = 2;   
+                    nivel1Phase = 4; 
                 });
             }
         }
@@ -130,7 +117,7 @@ function drawNivel1() {
 
     // --- FASE 4: TELA NÍVEL SEGUINTE ---
     if (nivel1Phase === 4) {
-        drawNextLevel(); // Desenha a tela com o botão para ir ao Nível 2
+        drawNextLevel();
     }
 }
 
@@ -165,12 +152,12 @@ function drawGlasses() {
         let liquidHeight = 0;
         let liquidColor = color(200);
 
-        if (g.state >= 2) { // Whiskey
+        if (g.state >= 2) { 
             liquidColor = color(204, 102, 0, 200); 
             let percentage = g.whiskeyCount / g.maxWhiskey;
             liquidHeight = (g.h * 0.35) * percentage;
 
-            if (g.state === 3) { // Soda
+            if (g.state === 3) { 
                 liquidHeight = g.h * 0.85; 
                 liquidColor = color(230, 180, 100, 220);
             }
@@ -237,35 +224,32 @@ function drawHeldItemCursor() {
 
 // LOGICA DE CLIQUE
 function checkNivel1Click() {
-    // --- TELA NEXT LEVEL ---
+    // --- TELA NEXT LEVEL (FASE 4) ---
     if (nivel1Phase === 4) {
-        const btnX = width / 2;
-        const btnY = height / 2 + 50;
-        
-        // Botão Central
-        if (mouseX > btnX - 100 && mouseX < btnX + 100 &&
-            mouseY > btnY - 30 && mouseY < btnY + 30) {
-            gameState = 3; // Vai para Nível 2
-            nivel1Phase = 0; // Reseta
-            return true;
-        }
-
         const iconY = height - 60;
-        const homeX = 80;
-        const retryX = 160;
-        const raioClick = 30;
+        const homeX = width / 2 - 100;
+        const retryX = width / 2 + 100;
 
-        // Casa
-        if (dist(mouseX, mouseY, homeX, iconY) < raioClick) {
-            gameState = 0; 
+        // Menu (Case Files)
+        if (dist(mouseX, mouseY, homeX, iconY) < 40) {
+            gameState = 1; // Volta para seleção de níveis
             nivel1Phase = 0;
             return true;
         }
 
-        // Retry
-        if (dist(mouseX, mouseY, retryX, iconY) < raioClick) {
+        // Replay (Nível 1)
+        if (dist(mouseX, mouseY, retryX, iconY) < 40) {
             setupNivel1();
             nivel1Phase = 1;
+            return true;
+        }
+
+        // Next Level (Botão Central) -> Nível 2
+        const btnX = width / 2;
+        const btnY = height / 2 + 50;
+        if (dist(mouseX, mouseY, btnX, btnY) < 50) {
+            gameState = 3; 
+            nivel1Phase = 0; 
             return true;
         }
         return false;
@@ -285,7 +269,6 @@ function checkNivel1Click() {
 
     // --- JOGO ---
     if (nivel1Phase === 1) {
-        // 1. Tenta pegar ingrediente
         for (let item of ingredients) {
             if (mouseX > item.x && mouseX < item.x + item.w &&
                 mouseY > item.y && mouseY < item.y + item.h) {
@@ -294,7 +277,6 @@ function checkNivel1Click() {
             }
         }
 
-        // 2. Tenta aplicar no copo
         for (let i = 0; i < glasses.length; i++) {
             let g = glasses[i];
             let left = g.x - (g.w / 2);
@@ -315,7 +297,7 @@ function checkNivel1Click() {
                 return true;
             }
         }
-        heldItem = null; // Clica no vazio solta o item
+        heldItem = null;
     }
 }
 
