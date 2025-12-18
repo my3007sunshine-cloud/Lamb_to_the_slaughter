@@ -97,9 +97,17 @@ function checkLambRevealed() {
 
 function drawNivel2() {
     // --- FASE 0: INTRO ---
-    if (nivel2Phase === 0) {
-        if (typeof drawVideoPlaceholder === 'function') drawVideoPlaceholder("LEVEL 2: THE FREEZER");
-        else { setupNivel2(); nivel2Phase = 1; }
+    if (nivel2Phase === 0) { 
+        if (!isVideoPlaying) {
+            startLevelVideo('imagens/Nivel2_parte1.mp4', 2);
+            if (nivelVideo) {
+                nivelVideo.onended(() => {
+                    stopAndCleanVideo();
+                    setupNivel2();   // CORREÇÃO: Chama o setup do Nivel 2
+                    nivel2Phase = 1; // CORREÇÃO: Atualiza a fase do Nivel 2
+                });
+            }
+        }
         return;
     }
 

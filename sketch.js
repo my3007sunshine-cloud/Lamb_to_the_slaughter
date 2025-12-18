@@ -281,7 +281,7 @@ function goBackToMap() {
 }
 
 function handleVideoSkip() {
-  // Lógica de Pular específica do Nível 1 (Exemplo)
+  // --- NÍVEL 1 (GameState 2) ---
   if (gameState === 2) {
     if (nivel1Phase === 0) {
       forceSkipVideo(() => { setupNivel1(); nivel1Phase = 1; }); 
@@ -289,6 +289,20 @@ function handleVideoSkip() {
       forceSkipVideo(() => { gameState = 2; nivel1Phase = 4; });
     }
   }
+
+  // --- NÍVEL 2 (GameState 3) ---
+  else if (gameState === 3) {
+    if (nivel2Phase === 0) {
+      // Pular Intro Vídeo -> Vai para o Gameplay
+      forceSkipVideo(() => { setupNivel2(); nivel2Phase = 1; });
+    } 
+    else if (nivel2Phase === 2) {
+      // Pular Outro Vídeo -> Vai para a tela de Next Level
+      forceSkipVideo(() => { gameState = 3; nivel2Phase = 4; });
+    }
+  }
+  
+  // (Futuramente podes adicionar aqui os blocos para gameState 4, 5, etc.)
 }
 
 // Placeholders Genéricos
